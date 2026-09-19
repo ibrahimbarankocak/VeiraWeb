@@ -31,7 +31,7 @@ export function Hero() {
             Join Veira free
           </Link>
           <a
-            href="#calendar"
+            href="/races"
             className="rounded-full border border-white/20 px-7 py-3.5 font-display text-lg font-bold uppercase tracking-wide text-white transition hover:border-mint-bright hover:text-mint-bright"
           >
             See the race calendar

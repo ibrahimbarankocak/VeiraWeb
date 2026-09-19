@@ -31,15 +31,15 @@ export function Footer() {
         </div>
         <nav className="space-y-2 text-sm text-white/60">
           <p className="mb-3 font-display text-lg font-bold uppercase tracking-wide text-white">Product</p>
-          <a href="#features" className="block hover:text-white">Features</a>
-          <a href="#calendar" className="block hover:text-white">Race calendar</a>
-          <a href="#pricing" className="block hover:text-white">Plans</a>
+          <Link href="/#features" className="block hover:text-white">Features</Link>
+          <Link href="/races" className="block hover:text-white">Race calendar</Link>
+          <Link href="/#pricing" className="block hover:text-white">Plans</Link>
         </nav>
         <nav className="space-y-2 text-sm text-white/60">
           <p className="mb-3 font-display text-lg font-bold uppercase tracking-wide text-white">Account</p>
           <Link href="/login" className="block hover:text-white">Log in</Link>
           <Link href="/login?mode=signup" className="block hover:text-white">Sign up</Link>
-          <a href="#faq" className="block hover:text-white">FAQ</a>
+          <Link href="/#faq" className="block hover:text-white">FAQ</Link>
         </nav>
       </div>
       <p className="headline select-none pt-10 text-center text-[clamp(8rem,32vw,30rem)] lowercase leading-[0.75] text-white/[0.06]" aria-hidden>

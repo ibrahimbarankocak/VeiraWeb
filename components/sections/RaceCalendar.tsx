@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Reveal } from "../ui/Reveal";
 import { PhoneFrame } from "../ui/PhoneFrame";
 
@@ -74,6 +75,9 @@ export function RaceCalendar() {
               </li>
             ))}
           </ul>
+          <Link href="/races" className="btn-mint mt-8">
+            Browse all races
+          </Link>
         </Reveal>
 
         <Reveal delay={0.1}>

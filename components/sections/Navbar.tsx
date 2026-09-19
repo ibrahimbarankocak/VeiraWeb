@@ -2,10 +2,10 @@ import Link from "next/link";
 import { Logo } from "../ui/Brand";
 
 const links = [
-  { href: "#features", label: "Features" },
-  { href: "#calendar", label: "Race calendar" },
-  { href: "#pricing", label: "Plans" },
-  { href: "#faq", label: "FAQ" },
+  { href: "/#features", label: "Features" },
+  { href: "/races", label: "Races" },
+  { href: "/#pricing", label: "Plans" },
+  { href: "/#faq", label: "FAQ" },
 ];
 
 export function Navbar() {
@@ -15,9 +15,9 @@ export function Navbar() {
         <Logo />
         <nav className="hidden items-center gap-8 md:flex">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-sm font-semibold text-white/60 transition hover:text-white">
+            <Link key={l.href} href={l.href} className="text-sm font-semibold text-white/60 transition hover:text-white">
               {l.label}
-            </a>
+            </Link>
           ))}
         </nav>
         <div className="flex items-center gap-3">
