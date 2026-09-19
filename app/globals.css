@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  background: #050907;
+}
+
+body {
+  background: #050907;
+  color: #f4faf7;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+@layer components {
+  .headline {
+    @apply font-display font-extrabold uppercase leading-[0.92] tracking-tight;
+  }
+  .grad-text {
+    background: linear-gradient(90deg, #d1f7e9 0%, #3ddc97 55%, #b6ff5c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .glow-text {
+    text-shadow: 0 0 28px rgba(61, 220, 151, 0.55);
+  }
+  .btn-mint {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 font-display text-lg font-bold uppercase tracking-wide text-ink transition;
+    background: linear-gradient(90deg, #3ddc97, #b6ff5c);
+    box-shadow: 0 0 40px rgba(61, 220, 151, 0.35);
+  }
+  .btn-mint:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 60px rgba(61, 220, 151, 0.55);
+  }
+  .eyebrow {
+    @apply font-display text-lg font-bold uppercase tracking-[0.18em] text-mint-bright;
+  }
+}
+
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  pointer-events: none;
+}
+
+.dotgrid {
+  background-image:
+    linear-gradient(to right, rgba(40, 104, 72, 0.14) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(40, 104, 72, 0.14) 1px, transparent 1px);
+  background-size: 100px 100px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
