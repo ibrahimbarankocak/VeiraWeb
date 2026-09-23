@@ -74,3 +74,109 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---- Animated run scene (components/scenes/RunScene.tsx) ---- */
+@keyframes sk-scroll {
+  to {
+    transform: translateX(-33.3333%);
+  }
+}
+@keyframes sk-lane {
+  to {
+    transform: translateX(-170px);
+  }
+}
+@keyframes sk-twinkle {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.12;
+  }
+}
+@keyframes sk-sweep {
+  0%,
+  100% {
+    transform: rotate(-9deg);
+  }
+  50% {
+    transform: rotate(9deg);
+  }
+}
+.sk-tw {
+  animation: sk-twinkle 4.5s ease-in-out infinite;
+}
+.sk-sweep {
+  animation: sk-sweep 11s ease-in-out infinite;
+}
+
+/* Run cycle: 0.72s per stride. Positive rotation swings a limb backwards, negative forwards. */
+@keyframes rn-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+@keyframes rn-thigh {
+  0%,
+  100% {
+    transform: rotate(-48deg);
+  }
+  50% {
+    transform: rotate(28deg);
+  }
+}
+@keyframes rn-shin {
+  0% {
+    transform: rotate(8deg);
+  }
+  30% {
+    transform: rotate(22deg);
+  }
+  55% {
+    transform: rotate(38deg);
+  }
+  78% {
+    transform: rotate(105deg);
+  }
+  100% {
+    transform: rotate(8deg);
+  }
+}
+@keyframes rn-arm {
+  0%,
+  100% {
+    transform: rotate(-55deg);
+  }
+  50% {
+    transform: rotate(45deg);
+  }
+}
+@keyframes rn-fore {
+  0%,
+  100% {
+    transform: rotate(-95deg);
+  }
+  50% {
+    transform: rotate(-62deg);
+  }
+}
+.rn-bob {
+  animation: rn-bob 0.36s ease-in-out infinite;
+}
+.rn-thigh {
+  animation: rn-thigh 0.72s ease-in-out infinite;
+}
+.rn-shin {
+  animation: rn-shin 0.72s ease-in-out infinite;
+}
+.rn-arm {
+  animation: rn-arm 0.72s ease-in-out infinite;
+}
+.rn-fore {
+  animation: rn-fore 0.72s ease-in-out infinite;
+}
