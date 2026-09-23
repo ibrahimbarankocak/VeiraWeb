@@ -1,10 +1,22 @@
 "use client";
 
-import { Suspense, useState, type FormEvent } from "react";
-import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState, type FormEvent } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Logo } from "../../components/ui/Brand";
 import { getSupabase } from "../../lib/supabase";
+import { useUser } from "../../lib/useUser";
+
+function friendlyError(message: string): string {
+  const m = message.toLowerCase();
+  if (m.includes("error sending"))
+    return "We could not send the confirmation email right now. Please try again in a few minutes, or contact support.";
+  if (m.includes("rate limit")) return "Too many attempts. Please wait a few minutes and try again.";
+  if (m.includes("invalid login credentials")) return "Wrong email or password.";
+  if (m.includes("email not confirmed")) return "Please confirm your email first — check your inbox.";
+  if (m.includes("already registered")) return "This email already has an account. Try logging in.";
+  return message;
+}
 
 const input =
   "h-14 w-full rounded-md border border-mint/25 bg-white px-4 text-base text-ink outline-none transition focus:border-mint focus:ring-2 focus:ring-mint/20";
@@ -12,6 +24,14 @@ const label = "mb-2 block px-1 text-sm font-semibold text-mint";
 
 function AuthForm() {
   const params = useSearchParams();
+  const router = useRouter();
+  const { user } = useUser();
+
+  // Already signed in (or just returned from Google) → main page.
+  useEffect(() => {
+    if (user) router.replace("/");
+  }, [user, router]);
+
   const [mode, setMode] = useState<"login" | "signup">(params.get("mode") === "signup" ? "signup" : "login");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
@@ -27,20 +47,27 @@ function AuthForm() {
     try {
       const sb = getSupabase();
       if (signup) {
-        const { error } = await sb.auth.signUp({
+        const { data, error } = await sb.auth.signUp({
           email,
           password,
-          options: { data: { full_name: String(f.get("name")) } },
+          options: { data: { full_name: String(f.get("name")) }, emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
-        setMsg({ ok: true, text: "Check your inbox to confirm your email." });
+        if (data.session) {
+          router.replace("/");
+          return;
+        }
+        // Supabase returns a user with no identities when the email is already registered.
+        if (data.user && data.user.identities?.length === 0) throw new Error("already registered");
+        setMsg({ ok: true, text: "Almost there! Check your inbox and confirm your email to finish signing up." });
       } else {
         const { error } = await sb.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        setMsg({ ok: true, text: "Signed in. Welcome back!" });
+        router.replace("/");
+        return;
       }
     } catch (err) {
-      setMsg({ ok: false, text: err instanceof Error ? err.message : "Something went wrong." });
+      setMsg({ ok: false, text: friendlyError(err instanceof Error ? err.message : "Something went wrong.") });
     } finally {
       setBusy(false);
     }
@@ -50,7 +77,7 @@ function AuthForm() {
     const email = form ? String(new FormData(form).get("email") || "") : "";
     if (!email) return setMsg({ ok: false, text: "Enter your email first." });
     const { error } = await getSupabase().auth.resetPasswordForEmail(email);
-    setMsg(error ? { ok: false, text: error.message } : { ok: true, text: "Password reset email sent." });
+    setMsg(error ? { ok: false, text: friendlyError(error.message) } : { ok: true, text: "Password reset email sent." });
   }
 
   async function google() {
@@ -58,7 +85,7 @@ function AuthForm() {
       provider: "google",
       options: { redirectTo: window.location.origin },
     });
-    if (error) setMsg({ ok: false, text: error.message });
+    if (error) setMsg({ ok: false, text: friendlyError(error.message) });
   }
 
   return (

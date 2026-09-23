@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Reveal } from "../ui/Reveal";
+import { Parallax, ParallaxBlob } from "../ui/Parallax";
 import { ClubsScreen, HomeScreen, InventoryScreen, LeagueScreen } from "./Screens";
 
 const steps: { n: string; title: string; body: string; bullets: string[]; screen: ReactNode }[] = [
@@ -36,13 +37,16 @@ const steps: { n: string; title: string; body: string; bullets: string[]; screen
 export function Features() {
   return (
     <section id="features" className="relative px-5 py-24 md:px-8">
-      <div className="blob right-0 top-1/4 h-96 w-96 bg-mint-bright/15" />
+      <ParallaxBlob className="right-0 top-1/4 h-96 w-96 bg-mint-bright/15" y={[-120, 200]} />
+      <ParallaxBlob className="-left-24 top-[60%] h-80 w-80 bg-[#b6ff5c]/10" y={[160, -160]} />
       <div className="mx-auto max-w-7xl space-y-24 md:space-y-40">
         {steps.map((s, i) => (
           <Reveal key={s.n}>
             <article className="grid items-center gap-10 rounded-[2rem] border border-white/10 bg-panel/70 p-6 md:p-12 lg:grid-cols-2">
               <div className={i % 2 ? "lg:order-2" : ""}>
-                <p className="headline text-7xl text-mint-bright/90 md:text-8xl">{s.n}</p>
+                <Parallax y={[50, -50]}>
+                  <p className="headline text-7xl text-mint-bright/90 md:text-8xl">{s.n}</p>
+                </Parallax>
                 <h3 className="headline mt-2 text-5xl md:text-6xl">{s.title}</h3>
                 <p className="mt-5 max-w-md text-white/60">{s.body}</p>
                 <ul className="mt-6 space-y-2.5">
@@ -54,7 +58,9 @@ export function Features() {
                   ))}
                 </ul>
               </div>
-              <div className={i % 2 ? "lg:order-1" : ""}>{s.screen}</div>
+              <div className={i % 2 ? "lg:order-1" : ""}>
+                <Parallax y={[36, -36]}>{s.screen}</Parallax>
+              </div>
             </article>
           </Reveal>
         ))}

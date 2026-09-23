@@ -157,7 +157,7 @@ export function RaceExplorer({ races }: { races: Race[] }) {
 
   return (
     <div>
-      <div className="sticky top-16 z-30 -mx-5 border-b border-white/10 bg-ink/85 px-5 py-4 backdrop-blur-xl md:-mx-8 md:px-8">
+      <div className="z-30 -mx-5 lg:sticky lg:top-16 border-b border-white/10 bg-ink/85 px-5 py-4 backdrop-blur-xl md:-mx-8 md:px-8">
         <div className="mx-auto max-w-7xl space-y-3">
           <div className="flex flex-wrap gap-3">
             <input

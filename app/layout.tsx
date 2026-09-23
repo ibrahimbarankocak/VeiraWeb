@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed, Manrope } from "next/font/google";
 import { type ReactNode } from "react";
+import { ScrollProgress } from "../components/ui/Parallax";
 import "./globals.css";
 
 const display = Barlow_Condensed({
@@ -25,8 +26,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`} suppressHydrationWarning>
-      <body suppressHydrationWarning>{children}</body>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${display.variable} ${sans.variable}`}
+      suppressHydrationWarning
+    >
+      <body suppressHydrationWarning>
+        <ScrollProgress />
+        {children}
+      </body>
     </html>
   );
 }

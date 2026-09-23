@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Logo } from "../ui/Brand";
+import { displayName, initials, useUser } from "../../lib/useUser";
 
 const links = [
   { href: "/#features", label: "Features" },
@@ -9,29 +13,110 @@ const links = [
 ];
 
 export function Navbar() {
+  const { user, loading } = useUser();
+  const [open, setOpen] = useState(false);
+
+  // Lock page scroll while the mobile menu is open.
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  const name = user ? displayName(user) : "";
+  const avatar = user?.user_metadata?.avatar_url as string | undefined;
+
   return (
+    <>
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-ink/60 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:px-8">
         <Logo />
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
           {links.map((l) => (
             <Link key={l.href} href={l.href} className="text-sm font-semibold text-white/60 transition hover:text-white">
               {l.label}
             </Link>
           ))}
         </nav>
+
         <div className="flex items-center gap-3">
-          <Link href="/login" className="hidden text-sm font-semibold text-white/70 hover:text-white sm:block">
-            Log in
-          </Link>
-          <Link
-            href="/login?mode=signup"
-            className="rounded-full bg-gradient-to-r from-mint-bright to-[#b6ff5c] px-5 py-2 font-display text-base font-bold uppercase tracking-wide text-ink"
+          {loading ? (
+            <span className="h-9 w-24" aria-hidden />
+          ) : user ? (
+            <Link
+              href="/profile"
+              className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] py-1 pl-1 pr-4 text-sm font-semibold transition hover:border-mint-bright/50"
+            >
+              {avatar ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={avatar} alt="" referrerPolicy="no-referrer" className="h-8 w-8 rounded-full object-cover" />
+              ) : (
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-mint text-[11px] font-bold text-mint-light">
+                  {initials(name)}
+                </span>
+              )}
+              <span className="hidden max-w-[8rem] truncate sm:block">My profile</span>
+            </Link>
+          ) : (
+            <>
+              <Link href="/login" className="hidden text-sm font-semibold text-white/70 hover:text-white sm:block">
+                Log in
+              </Link>
+              <Link
+                href="/login?mode=signup"
+                className="rounded-full bg-gradient-to-r from-mint-bright to-[#b6ff5c] px-5 py-2 font-display text-base font-bold uppercase tracking-wide text-ink"
+              >
+                Get started
+              </Link>
+            </>
+          )}
+
+          <button
+            onClick={() => setOpen((o) => !o)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            className="grid h-10 w-10 place-items-center rounded-full border border-white/10 md:hidden"
           >
-            Get started
-          </Link>
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              {open ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+            </svg>
+          </button>
         </div>
       </div>
     </header>
+
+      {open && (
+        <nav
+          className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto border-t border-white/10 bg-ink/95 px-5 py-8 backdrop-blur-2xl md:hidden"
+          aria-label="Mobile"
+        >
+          <ul className="space-y-1">
+            {links.map((l) => (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                  className="headline block border-b border-white/10 py-4 text-4xl"
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+            {!loading && !user && (
+              <li>
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="headline block border-b border-white/10 py-4 text-4xl text-mint-bright"
+                >
+                  Log in
+                </Link>
+              </li>
+            )}
+          </ul>
+        </nav>
+      )}
+    </>
   );
 }
