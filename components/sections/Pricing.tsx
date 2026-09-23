@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Reveal } from "../ui/Reveal";
-import { ParallaxBlob } from "../ui/Parallax";
 
 const tiers = [
   { name: "Runner", tag: "Free today", cta: "Start free", href: "/login?mode=signup", hot: false },
@@ -25,8 +24,8 @@ const cell = (v: string | number) =>
 
 export function Pricing() {
   return (
-    <section id="pricing" className="relative px-5 py-28 md:px-8 md:py-40">
-      <ParallaxBlob className="-right-20 top-20 h-96 w-96 bg-[#b6ff5c]/20" y={[-100, 180]} />
+    <section id="pricing" className="relative overflow-x-clip px-5 py-28 md:px-8 md:py-40">
+      <div className="blob -right-20 top-20 h-96 w-96 bg-[#b6ff5c]/20" />
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <h2 className="headline text-center text-[clamp(3rem,7vw,6.5rem)]">

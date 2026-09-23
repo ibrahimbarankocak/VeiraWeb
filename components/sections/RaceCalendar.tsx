@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Reveal } from "../ui/Reveal";
-import { Parallax, ParallaxBlob } from "../ui/Parallax";
 import { PhoneFrame } from "../ui/PhoneFrame";
 
 type Race = {
@@ -54,8 +53,8 @@ export function RaceCalendar() {
     });
 
   return (
-    <section id="calendar" className="relative px-5 py-28 md:px-8 md:py-40">
-      <ParallaxBlob className="left-0 top-1/3 h-[32rem] w-[32rem] bg-mint/40" y={[-140, 180]} />
+    <section id="calendar" className="relative overflow-x-clip px-5 py-28 md:px-8 md:py-40">
+      <div className="blob left-0 top-1/3 h-[32rem] w-[32rem] bg-mint/40" />
       <div className="mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-[1fr_auto]">
         <Reveal>
           <p className="eyebrow mb-4">Race calendar</p>
@@ -81,7 +80,6 @@ export function RaceCalendar() {
           </Link>
         </Reveal>
 
-        <Parallax y={[50, -50]}>
         <Reveal delay={0.1}>
           <PhoneFrame active="Races" tint="rgba(30,110,80,0.5)" className="max-w-[360px]">
             <div className="flex h-full flex-col overflow-y-auto pb-2 [scrollbar-width:none]">
@@ -180,7 +178,6 @@ export function RaceCalendar() {
             </div>
           </PhoneFrame>
         </Reveal>
-        </Parallax>
       </div>
     </section>
   );

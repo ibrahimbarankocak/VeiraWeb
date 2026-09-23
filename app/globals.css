@@ -7,6 +7,18 @@ html {
   background: #050907;
 }
 
+/* Lenis smooth scrolling */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
 body {
   background: #050907;
   color: #f4faf7;

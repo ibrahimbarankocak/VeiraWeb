@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed, Manrope } from "next/font/google";
 import { type ReactNode } from "react";
-import { ScrollProgress } from "../components/ui/Parallax";
+import { ScrollProgress } from "../components/ui/ScrollProgress";
+import { SmoothScroll } from "../components/scenes/SmoothScroll";
 import "./globals.css";
 
 const display = Barlow_Condensed({
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       suppressHydrationWarning
     >
       <body suppressHydrationWarning>
+        <SmoothScroll />
         <ScrollProgress />
         {children}
       </body>

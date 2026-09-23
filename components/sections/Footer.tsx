@@ -1,12 +1,11 @@
 import Link from "next/link";
 import { Reveal } from "../ui/Reveal";
 import { Logo } from "../ui/Brand";
-import { Parallax, ParallaxBlob } from "../ui/Parallax";
 
 export function FinalCta() {
   return (
     <section className="relative overflow-hidden px-5 py-32 text-center md:px-8">
-      <ParallaxBlob className="left-[calc(50%-20rem)] top-0 h-[30rem] w-[40rem] bg-mint-bright/30" y={[-90, 140]} />
+      <div className="blob left-[calc(50%-20rem)] top-0 h-[30rem] w-[40rem] bg-mint-bright/30" />
       <Reveal>
         <h2 className="headline mx-auto max-w-4xl text-[clamp(3.4rem,9vw,8rem)]">
           Your season,
@@ -51,14 +50,12 @@ export function Footer() {
         </div>
       </div>
 
-      <Parallax y={[-40, 10]}>
         <p
           className="headline select-none pt-10 text-center text-[clamp(8rem,32vw,30rem)] lowercase leading-[0.75] text-white/[0.06]"
           aria-hidden
         >
           veira
         </p>
-      </Parallax>
       <p className="pb-6 text-center text-xs text-white/30">© {new Date().getFullYear()} Veira</p>
     </footer>
   );

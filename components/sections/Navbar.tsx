@@ -16,6 +16,33 @@ export function Navbar() {
   const { user, loading } = useUser();
   const [open, setOpen] = useState(false);
 
+  // Hide on scroll down, reveal on scroll up. Always shown near the top of the page.
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    let last = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = Math.max(window.scrollY, 0);
+        const delta = y - last;
+        if (y < 80) setHidden(false);
+        else if (delta > 6) setHidden(true);
+        else if (delta < -6) setHidden(false);
+        if (Math.abs(delta) > 6 || y < 80) last = y;
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Let other sticky UI (e.g. the race filter bar) follow the header.
+  useEffect(() => {
+    document.documentElement.dataset.nav = hidden && !open ? "hidden" : "shown";
+  }, [hidden, open]);
+
   // Lock page scroll while the mobile menu is open.
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -29,7 +56,11 @@ export function Navbar() {
 
   return (
     <>
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-ink/60 backdrop-blur-xl">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-ink/60 backdrop-blur-xl transition-transform duration-300 ease-out ${
+        hidden && !open ? "-translate-y-full" : "translate-y-0"
+      }`}
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:px-8">
         <Logo />
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
@@ -90,6 +121,7 @@ export function Navbar() {
         <nav
           className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto border-t border-white/10 bg-ink/95 px-5 py-8 backdrop-blur-2xl md:hidden"
           aria-label="Mobile"
+          data-lenis-prevent
         >
           <ul className="space-y-1">
             {links.map((l) => (

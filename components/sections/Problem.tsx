@@ -1,5 +1,4 @@
 import { Reveal } from "../ui/Reveal";
-import { Parallax } from "../ui/Parallax";
 
 const pains = [
   ["Race info is scattered", "Federation sites, ticket pages and Instagram posts — nothing in one place."],
@@ -63,13 +62,11 @@ export function Problem() {
       <div className="relative">
         <Blocks />
         <div className="bg-gradient-to-b from-[#b6ff5c] via-[#3ddc97] to-ink px-5 pb-40 pt-16 text-center">
-          <Parallax y={[90, -90]}>
-            <Reveal>
-              <h2 className="headline text-[clamp(3.5rem,9vw,8rem)] text-ink">
-                There&apos;s a<br />better way
-              </h2>
-            </Reveal>
-          </Parallax>
+          <Reveal>
+            <h2 className="headline text-[clamp(3.5rem,9vw,8rem)] text-ink">
+              There&apos;s a<br />better way
+            </h2>
+          </Reveal>
         </div>
         <div className="-mt-1 bg-ink">
           <Blocks flip />
