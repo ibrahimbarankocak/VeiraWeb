@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { cubicBezier, motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { ClubsScreen, HomeScreen, InventoryScreen, LeagueScreen } from "../sections/Screens";
 import { Reveal } from "../ui/Reveal";
@@ -15,7 +15,7 @@ const items: { title: string; body: string; screen: ReactNode }[] = [
 
 const easeOut = cubicBezier(0.22, 1, 0.36, 1);
 
-function Rise({ i, p, pin, item }: { i: number; p: MotionValue<number>; pin: boolean; item: (typeof items)[number] }) {
+function Rise({ i, p, pin, scale, item }: { i: number; p: MotionValue<number>; pin: boolean; scale: number; item: (typeof items)[number] }) {
   const start = 0.04 + 0.09 * i;
   const end = start + 0.36;
   const rise = useMap(p, start, end, 105, 0, easeOut);
@@ -26,13 +26,13 @@ function Rise({ i, p, pin, item }: { i: number; p: MotionValue<number>; pin: boo
     <motion.div style={pin ? { y } : undefined} className={i % 2 ? "lg:mt-8" : ""}>
       <div
         className="mx-auto [--s:0.8] lg:[--s:0.66]"
-        style={{ width: "calc(340px * var(--s))", height: "calc(718px * var(--s))" }}
+        style={{ width: "calc(340px * var(--s))", height: "calc(718px * var(--s))", ...(pin ? ({ "--s": scale } as CSSProperties) : {}) }}
       >
         <div style={{ width: 340, transform: "scale(var(--s))", transformOrigin: "top left" }}>{item.screen}</div>
       </div>
       <motion.div style={pin ? { opacity: caption } : undefined} className="mx-auto mt-5 max-w-[15rem] text-center">
         <h3 className="headline text-3xl">{item.title}</h3>
-        <p className="mt-2 text-sm text-fg/55 [@media(max-height:800px)]:hidden">{item.body}</p>
+        <p className="mt-2 text-sm text-fg/55 [@media(max-height:880px)]:hidden">{item.body}</p>
       </motion.div>
     </motion.div>
   );
@@ -46,7 +46,21 @@ export function PhoneRise() {
   const desktop = useMinWidth(1024);
   const pin = desktop && !reduce;
   const { scrollYProgress: p } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const titleOpacity = useMap(p, 0.1, 0.6, 1, 0.3);
+
+  // While pinned, everything (title, phones, captions) must fit in one screen. Size the phones from the
+  // window height so short windows (laptops, display scaling) never clip the captions.
+  const [scale, setScale] = useState(0.66);
+  useEffect(() => {
+    const fit = () => {
+      const vh = window.innerHeight;
+      const reserved = vh < 880 ? 390 : 460; // header gap + title + stagger + caption (+ body text on tall screens)
+      setScale(Math.min(0.8, Math.max(0.4, (vh - reserved) / 718)));
+    };
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, []);
+  const titleOpacity = useMap(p, 0.1, 0.6, 1, 0.6);
   const titleY = useMap(p, 0, 0.7, 0, -30);
 
   return (
@@ -60,7 +74,7 @@ export function PhoneRise() {
         </motion.div>
         <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-16 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
           {items.map((item, i) => (
-            <Rise key={item.title} i={i} p={p} pin={pin} item={item} />
+            <Rise key={item.title} i={i} p={p} pin={pin} scale={scale} item={item} />
           ))}
         </div>
       </div>

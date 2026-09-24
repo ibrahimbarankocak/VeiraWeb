@@ -33,7 +33,7 @@ export function RaceCollage({ races, total }: { races: CollageRace[]; total: num
     <section ref={ref} className={reduce ? "relative min-h-screen" : "relative h-[260vh]"}>
       <div
         className={`${reduce ? "" : "sticky top-0"} h-screen overflow-hidden`}
-        style={{ "--cw": "clamp(140px, 15vw, 240px)" } as React.CSSProperties}
+        style={{ "--cw": "clamp(130px, min(15vw, 24vh), 240px)" } as React.CSSProperties}
       >
         <motion.div
           style={reduce ? undefined : { opacity: label, y: labelY }}
