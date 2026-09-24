@@ -75,7 +75,7 @@ function PileCard({ i, race, e }: { i: number; race: CollageRace; e: MotionValue
   return (
     <motion.figure
       style={{ x, y, rotate, zIndex: i, width: "var(--cw)", aspectRatio: "4 / 5" }}
-      className="absolute left-1/2 top-1/2 -ml-[calc(var(--cw)/2)] -mt-[calc(var(--cw)*0.625)] overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-br from-mint via-[#0d3a26] to-ink shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)]"
+      className="absolute left-1/2 top-1/2 -ml-[calc(var(--cw)/2)] -mt-[calc(var(--cw)*0.625)] overflow-hidden rounded-2xl border border-fg/15 bg-gradient-to-br from-mint via-[#0d3a26] to-ink shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)]"
     >
       {race.image && (
         // eslint-disable-next-line @next/next/no-img-element

@@ -73,7 +73,7 @@ export default function ProfilePage() {
         <div className="blob -left-40 top-0 h-[28rem] w-[28rem] bg-mint-bright/25" />
         <div className="relative mx-auto max-w-3xl">
           {!user ? (
-            <p className="py-24 text-center text-white/50">Loading your profile…</p>
+            <p className="py-24 text-center text-fg/50">Loading your profile…</p>
           ) : (
             <>
               <p className="eyebrow mb-3">My profile</p>
@@ -88,7 +88,7 @@ export default function ProfilePage() {
                 )}
                 <div className="min-w-0">
                   <h1 className="headline break-words text-[clamp(2.6rem,7vw,5rem)]">{name}</h1>
-                  <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-white/55">
+                  <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-fg/55">
                     {profile?.username ? <span>@{profile.username}</span> : null}
                     {role && (
                       <span className="rounded-full bg-mint-bright/15 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-mint-bright">
@@ -99,25 +99,25 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <dl className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-3">
+              <dl className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-fg/10 bg-fg/10 sm:grid-cols-3">
                 {stats.map(([k, v]) => (
                   <div key={k} className="bg-panel px-5 py-6">
                     <dd className="headline text-3xl text-mint-bright">{profileLoaded || k === "Member since" ? v : "…"}</dd>
-                    <dt className="mt-1 text-xs font-semibold uppercase tracking-widest text-white/45">{k}</dt>
+                    <dt className="mt-1 text-xs font-semibold uppercase tracking-widest text-fg/45">{k}</dt>
                   </div>
                 ))}
               </dl>
 
-              <div className="mt-6 rounded-2xl border border-white/10 bg-panel/70 p-6">
+              <div className="mt-6 rounded-2xl border border-fg/10 bg-panel/70 p-6">
                 <h2 className="headline text-2xl">Account</h2>
-                <dl className="mt-4 divide-y divide-white/10 text-sm">
+                <dl className="mt-4 divide-y divide-fg/10 text-sm">
                   {[
                     ["Email", user.email ?? "—"],
                     ["Sign-in method", provider === "google" ? "Google" : "Email & password"],
                     ["Email status", user.email_confirmed_at ? "Confirmed" : "Not confirmed"],
                   ].map(([k, v]) => (
                     <div key={k} className="flex flex-wrap justify-between gap-2 py-3">
-                      <dt className="text-white/50">{k}</dt>
+                      <dt className="text-fg/50">{k}</dt>
                       <dd className="font-semibold">{v}</dd>
                     </div>
                   ))}
@@ -131,12 +131,12 @@ export default function ProfilePage() {
                 <button
                   onClick={signOut}
                   disabled={signingOut}
-                  className="rounded-full border border-white/20 px-7 py-3.5 font-display text-lg font-bold uppercase tracking-wide transition hover:border-red-400 hover:text-red-300 disabled:opacity-60"
+                  className="rounded-full border border-fg/20 px-7 py-3.5 font-display text-lg font-bold uppercase tracking-wide transition hover:border-red-400 hover:text-red-300 disabled:opacity-60"
                 >
                   {signingOut ? "Signing out…" : "Sign out"}
                 </button>
               </div>
-              <p className="mt-6 text-xs text-white/35">
+              <p className="mt-6 text-xs text-fg/35">
                 Shoe tracking, league rank and clubs live in the Veira mobile app.
               </p>
             </>

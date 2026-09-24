@@ -32,7 +32,7 @@ function Rise({ i, p, pin, item }: { i: number; p: MotionValue<number>; pin: boo
       </div>
       <motion.div style={pin ? { opacity: caption } : undefined} className="mx-auto mt-5 max-w-[15rem] text-center">
         <h3 className="headline text-3xl">{item.title}</h3>
-        <p className="mt-2 text-sm text-white/55 [@media(max-height:800px)]:hidden">{item.body}</p>
+        <p className="mt-2 text-sm text-fg/55 [@media(max-height:800px)]:hidden">{item.body}</p>
       </motion.div>
     </motion.div>
   );

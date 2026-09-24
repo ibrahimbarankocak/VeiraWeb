@@ -33,6 +33,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${display.variable} ${sans.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        {/* Apply the saved theme before first paint so there is no dark-to-light flash. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem("veira-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}`,
+          }}
+        />
+      </head>
       <body suppressHydrationWarning>
         <SmoothScroll />
         <ScrollProgress />

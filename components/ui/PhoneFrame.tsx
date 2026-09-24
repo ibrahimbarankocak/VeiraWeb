@@ -24,7 +24,7 @@ export function PhoneFrame({
 }) {
   return (
     <div
-      className={`relative mx-auto aspect-[9/19] w-full max-w-[340px] rounded-[3rem] border border-white/15 bg-[#0d0f0e] p-[9px] shadow-[0_40px_120px_-20px_rgba(61,220,151,0.25)] ${className}`}
+      className={`relative mx-auto aspect-[9/19] w-full max-w-[340px] rounded-[3rem] text-white border border-white/15 bg-[#0d0f0e] p-[9px] shadow-[0_40px_120px_-20px_rgba(61,220,151,0.25)] ${className}`}
     >
       <div
         className="relative flex h-full flex-col overflow-hidden rounded-[2.5rem] bg-[#07110d]"

@@ -19,7 +19,7 @@ function friendlyError(message: string): string {
 }
 
 const input =
-  "h-14 w-full rounded-md border border-mint/25 bg-white px-4 text-base text-ink outline-none transition focus:border-mint focus:ring-2 focus:ring-mint/20";
+  "h-14 w-full rounded-md border border-mint/25 bg-white px-4 text-base text-onmint outline-none transition focus:border-mint focus:ring-2 focus:ring-mint/20";
 const label = "mb-2 block px-1 text-sm font-semibold text-mint";
 
 function AuthForm() {
@@ -184,7 +184,7 @@ function AuthForm() {
 export default function LoginPage() {
   return (
     <main
-      className="relative min-h-screen bg-white px-5 py-8 text-ink"
+      className="relative min-h-screen bg-white px-5 py-8 text-onmint"
       style={{
         backgroundImage:
           "linear-gradient(to right, rgba(40,104,72,0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(40,104,72,0.09) 1px, transparent 1px)",

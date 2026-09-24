@@ -39,18 +39,18 @@ export function Problem() {
               <br />
               the race you <span className="grad-text glow-text">love</span>.
             </h2>
-            <p className="mt-6 max-w-md text-white/60">
+            <p className="mt-6 max-w-md text-fg/60">
               Planning it shouldn&apos;t be the hardest part of the season.
             </p>
           </Reveal>
 
-          <ul className="divide-y divide-white/10 border-y border-white/10">
+          <ul className="divide-y divide-fg/10 border-y border-fg/10">
             {pains.map(([t, d], i) => (
               <li key={t}>
                 <Reveal delay={i * 0.08}>
                   <div className="py-6">
                     <p className="headline text-2xl text-mint-bright md:text-3xl">{t}</p>
-                    <p className="mt-2 text-sm text-white/55">{d}</p>
+                    <p className="mt-2 text-sm text-fg/55">{d}</p>
                   </div>
                 </Reveal>
               </li>
@@ -63,7 +63,7 @@ export function Problem() {
         <Blocks />
         <div className="bg-gradient-to-b from-[#b6ff5c] via-[#3ddc97] to-ink px-5 pb-40 pt-16 text-center">
           <Reveal>
-            <h2 className="headline text-[clamp(3.5rem,9vw,8rem)] text-ink">
+            <h2 className="headline text-[clamp(3.5rem,9vw,8rem)] text-onmint">
               There&apos;s a<br />better way
             </h2>
           </Reveal>

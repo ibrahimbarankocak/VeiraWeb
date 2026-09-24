@@ -21,11 +21,11 @@ const MONTH_LONG = ["January", "February", "March", "April", "May", "June", "Jul
 
 const chip = (on: boolean) =>
   `rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
-    on ? "bg-mint-bright text-ink" : "bg-white/[0.06] text-white/60 hover:bg-white/10 hover:text-white"
+    on ? "bg-mint-bright text-onbright" : "bg-fg/[0.06] text-fg/60 hover:bg-fg/10 hover:text-fg"
   }`;
 
 const field =
-  "h-11 rounded-xl border border-white/10 bg-white/[0.04] px-3 text-sm font-semibold text-white outline-none focus:border-mint-bright [&>option]:bg-panel";
+  "h-11 rounded-xl border border-fg/10 bg-fg/[0.04] px-3 text-sm font-semibold text-fg outline-none focus:border-mint-bright [&>option]:bg-panel";
 
 function fmtKm(km: number) {
   return `${Number.isInteger(km) ? km : km.toFixed(1)}K`;
@@ -35,7 +35,7 @@ function RaceCard({ r }: { r: Race }) {
   const [y, m, d] = r.date.split("-").map(Number);
   const [imgOk, setImgOk] = useState(true);
   return (
-    <li className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel/70 transition hover:border-mint-bright/40">
+    <li className="group flex flex-col overflow-hidden rounded-2xl border border-fg/10 bg-panel/70 transition hover:border-mint-bright/40">
       <div className="relative h-36 bg-gradient-to-br from-mint/60 via-[#0d3a26] to-ink">
         {r.image && imgOk && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -52,27 +52,27 @@ function RaceCard({ r }: { r: Race }) {
           <p className="headline text-2xl">{d}</p>
           <p className="text-[10px] font-bold uppercase text-mint-bright">{MONTH[m - 1]} {y}</p>
         </div>
-        <span className="absolute right-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white/80 backdrop-blur">
+        <span className="absolute right-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-fg/80 backdrop-blur">
           {r.type}
         </span>
       </div>
       <div className="flex flex-1 flex-col p-4">
         <h3 className="font-display text-2xl font-bold uppercase leading-tight">{r.name}</h3>
-        <p className="mt-1 text-sm text-white/55">
+        <p className="mt-1 text-sm text-fg/55">
           {r.location || "Location TBA"}
           {r.location && !r.location.toLowerCase().includes(r.country.toLowerCase()) ? ` · ${r.country}` : ""}
         </p>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {r.distances.length ? (
             r.distances.slice(0, 6).map((k) => (
-              <span key={k} className="rounded-md bg-mint/40 px-2 py-0.5 text-[11px] font-bold text-mint-light">
+              <span key={k} className="rounded-md bg-mint-bright/15 px-2 py-0.5 text-[11px] font-bold text-mint-bright">
                 {fmtKm(k)}
               </span>
             ))
           ) : (
-            <span className="text-[11px] font-semibold text-white/35">Distance TBA</span>
+            <span className="text-[11px] font-semibold text-fg/35">Distance TBA</span>
           )}
-          {r.distances.length > 6 && <span className="text-[11px] text-white/40">+{r.distances.length - 6}</span>}
+          {r.distances.length > 6 && <span className="text-[11px] text-fg/40">+{r.distances.length - 6}</span>}
         </div>
         <div className="mt-auto pt-4">
           {r.url ? (
@@ -85,7 +85,7 @@ function RaceCard({ r }: { r: Race }) {
               Registration & details <span aria-hidden>↗</span>
             </a>
           ) : (
-            <span className="text-xs font-semibold text-white/30">No registration link yet</span>
+            <span className="text-xs font-semibold text-fg/30">No registration link yet</span>
           )}
         </div>
       </div>
@@ -157,7 +157,7 @@ export function RaceExplorer({ races }: { races: Race[] }) {
 
   return (
     <div>
-      <div className="z-30 -mx-5 lg:sticky lg:top-16 lg:transition-transform lg:duration-300 lg:[html[data-nav=hidden]_&]:translate-y-[calc(-100%-4rem)] border-b border-white/10 bg-ink/85 px-5 py-4 backdrop-blur-xl md:-mx-8 md:px-8">
+      <div className="z-30 -mx-5 lg:sticky lg:top-16 lg:transition-transform lg:duration-300 lg:[html[data-nav=hidden]_&]:translate-y-[calc(-100%-4rem)] border-b border-fg/10 bg-ink/85 px-5 py-4 backdrop-blur-xl md:-mx-8 md:px-8">
         <div className="mx-auto max-w-7xl space-y-3">
           <div className="flex flex-wrap gap-3">
             <input
@@ -165,7 +165,7 @@ export function RaceExplorer({ races }: { races: Race[] }) {
               onChange={(e) => { setQ(e.target.value); setShown(PAGE); }}
               placeholder="Search race, city or country…"
               aria-label="Search races"
-              className={`${field} min-w-[14rem] flex-1 placeholder:text-white/35`}
+              className={`${field} min-w-[14rem] flex-1 placeholder:text-fg/35`}
             />
             <select value={country} onChange={(e) => { setCountry(e.target.value); setShown(PAGE); }} aria-label="Country" className={field}>
               <option value="all">All countries</option>
@@ -191,7 +191,7 @@ export function RaceExplorer({ races }: { races: Race[] }) {
                 {b}
               </button>
             ))}
-            <span className="mx-1 h-5 w-px bg-white/15" />
+            <span className="mx-1 h-5 w-px bg-fg/15" />
             {TYPES.map((t) => (
               <button key={t} onClick={() => toggle(types, t, setTypes)} aria-pressed={types.has(t)} className={chip(types.has(t))}>
                 {t}
@@ -207,11 +207,11 @@ export function RaceExplorer({ races }: { races: Race[] }) {
       </div>
 
       <div className="mx-auto max-w-7xl pt-8">
-        <p className="mb-6 text-sm font-semibold text-white/50" aria-live="polite">
+        <p className="mb-6 text-sm font-semibold text-fg/50" aria-live="polite">
           {list.length.toLocaleString("en-US")} race{list.length === 1 ? "" : "s"}
         </p>
         {list.length === 0 ? (
-          <div className="rounded-2xl border border-white/10 py-24 text-center">
+          <div className="rounded-2xl border border-fg/10 py-24 text-center">
             <p className="headline text-4xl">No races match</p>
             <button onClick={reset} className="btn-mint mt-6">Clear filters</button>
           </div>

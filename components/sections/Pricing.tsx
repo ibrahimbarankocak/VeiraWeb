@@ -20,7 +20,7 @@ const rows: [string, (string | number)[]][] = [
 ];
 
 const cell = (v: string | number) =>
-  v === 1 ? <span className="text-mint-bright">✓</span> : v === 0 ? <span className="text-white/20">—</span> : <span className="text-xs font-bold text-white/60">{v}</span>;
+  v === 1 ? <span className="text-mint-bright">✓</span> : v === 0 ? <span className="text-fg/20">—</span> : <span className="text-xs font-bold text-fg/60">{v}</span>;
 
 export function Pricing() {
   return (
@@ -34,7 +34,7 @@ export function Pricing() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="mt-14 overflow-x-auto rounded-3xl border border-white/10 bg-panel/70">
+          <div className="mt-14 overflow-x-auto rounded-3xl border border-fg/10 bg-panel/70">
             <table className="w-full min-w-[640px] border-collapse text-left">
               <thead>
                 <tr>
@@ -46,7 +46,7 @@ export function Pricing() {
                       <Link
                         href={t.href}
                         className={`mt-4 inline-block rounded-full px-5 py-2 font-display text-base font-bold uppercase ${
-                          t.hot ? "bg-gradient-to-r from-mint-bright to-[#b6ff5c] text-ink" : "border border-white/20 text-white hover:border-mint-bright"
+                          t.hot ? "bg-gradient-to-r from-[#3ddc97] to-[#b6ff5c] text-onmint" : "border border-fg/20 text-fg hover:border-mint-bright"
                         }`}
                       >
                         {t.cta}
@@ -57,8 +57,8 @@ export function Pricing() {
               </thead>
               <tbody>
                 {rows.map(([label, vals]) => (
-                  <tr key={label} className="border-t border-white/10">
-                    <td className="p-4 text-sm font-semibold text-white/75">{label}</td>
+                  <tr key={label} className="border-t border-fg/10">
+                    <td className="p-4 text-sm font-semibold text-fg/75">{label}</td>
                     {vals.map((v, i) => (
                       <td key={i} className={`p-4 text-center ${tiers[i].hot ? "bg-mint/15" : ""}`}>
                         {cell(v)}
@@ -69,7 +69,7 @@ export function Pricing() {
               </tbody>
             </table>
           </div>
-          <p className="mt-4 text-center text-xs text-white/40">
+          <p className="mt-4 text-center text-xs text-fg/40">
             Pro pricing isn&apos;t final yet — everything marked ✓ is free right now.
           </p>
         </Reveal>

@@ -7,8 +7,8 @@ import { RunScene } from "./RunScene";
 import { range, smooth, useMap } from "./hooks";
 
 // Concentric rounded "tunnel" rings, outermost first, drawn as crisp vector bands in a 1000 x 900 box.
-const RINGS = ["#d9fbe9", "#a7f0cb", "#5fe3a6", "#2fbf83", "#1f9068", "#166a4d", "#104a37", "#0a3025"];
-const N = RINGS.length;
+// Colours come from the theme (--ring-0 .. --ring-7 in globals.css).
+const N = 8;
 const BOX_W = 1000;
 const BOX_H = 900;
 const BAND = 45; // band thickness
@@ -25,13 +25,13 @@ const roundedRect = (x: number, y: number, w: number, h: number, r: number) => {
   return `M${x + r} ${y}H${x + w - r}A${r} ${r} 0 0 1 ${x + w} ${y + r}V${y + h - r}A${r} ${r} 0 0 1 ${x + w - r} ${y + h}H${x + r}A${r} ${r} 0 0 1 ${x} ${y + h - r}V${y + r}A${r} ${r} 0 0 1 ${x + r} ${y}Z`;
 };
 
-const BANDS = RINGS.map((color, i) => {
+const BANDS = Array.from({ length: N }, (_, i) => {
   const o = i * BAND;
   const j = i + 1;
   const e = i === N - 1 ? 0 : OVERLAP; // the innermost band's inner edge is the visible opening, so no overlap there
   const inner = j * BAND + e;
   return {
-    color,
+    i,
     d:
       roundedRect(o, o, BOX_W - 2 * o, BOX_H - 2 * o, R0 - R_STEP * i) +
       roundedRect(inner, inner, BOX_W - 2 * inner, BOX_H - 2 * inner, R0 - R_STEP * j - e),
@@ -49,7 +49,7 @@ const Headline = () => (
       <br />
       <span className="grad-text">find your next race</span>
     </h1>
-    <p className="mx-auto mt-5 hidden max-w-2xl text-lg text-white/65 sm:block md:text-xl [@media(max-height:760px)]:hidden">
+    <p className="mx-auto mt-5 hidden max-w-2xl text-lg text-fg/65 sm:block md:text-xl [@media(max-height:760px)]:hidden">
       Discover races, track every kilometer on every shoe, and climb the weekly league — all in one app built by
       runners, for runners.
     </p>
@@ -59,7 +59,7 @@ const Headline = () => (
       </Link>
       <Link
         href="/races"
-        className="rounded-full border border-white/25 bg-ink/60 px-7 py-3.5 font-display text-lg font-bold uppercase tracking-wide text-white backdrop-blur transition hover:border-mint-bright hover:text-mint-bright"
+        className="rounded-full border border-fg/25 bg-ink/60 px-7 py-3.5 font-display text-lg font-bold uppercase tracking-wide text-fg backdrop-blur transition hover:border-mint-bright hover:text-mint-bright"
       >
         See the race calendar
       </Link>
@@ -154,7 +154,7 @@ export function HeroTunnel() {
             style={{ opacity: overlayOpacity, y: overlayY, pointerEvents: overlayPE }}
             className="absolute inset-x-0 top-[12%] z-10 px-5 text-center"
           >
-            <h2 className="headline mx-auto max-w-4xl text-[clamp(2.4rem,min(7vw,11vh),6.5rem)] text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.6)]">
+            <h2 className="headline mx-auto max-w-4xl text-[clamp(2.4rem,min(7vw,11vh),6.5rem)] text-fg drop-shadow-[0_2px_20px_rgb(var(--c-ink)/0.6)]">
               Race day is <span className="grad-text">closer</span> than you think
             </h2>
             <Link href="/races" className="btn-mint mt-8">
@@ -172,7 +172,7 @@ export function HeroTunnel() {
             style={{ width: "var(--B)", height: "calc(var(--B) * 0.9)" }}
           >
             {BANDS.map((b) => (
-              <path key={b.color} d={b.d} fill={b.color} fillRule="evenodd" />
+              <path key={b.i} d={b.d} style={{ fill: `var(--ring-${b.i})` }} fillRule="evenodd" />
             ))}
           </svg>
         </motion.div>
@@ -197,11 +197,11 @@ const stats = [
 
 export function HeroStats() {
   return (
-    <dl className="mx-auto -mt-1 grid max-w-5xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 md:grid-cols-4">
+    <dl className="mx-auto -mt-1 grid max-w-5xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-fg/10 bg-fg/10 md:grid-cols-4">
       {stats.map(([a, b]) => (
         <div key={a} className="bg-ink/80 px-4 py-6 text-center">
           <dt className="headline text-3xl text-mint-bright md:text-4xl">{a}</dt>
-          <dd className="mt-1 text-xs font-semibold uppercase tracking-widest text-white/45">{b}</dd>
+          <dd className="mt-1 text-xs font-semibold uppercase tracking-widest text-fg/45">{b}</dd>
         </div>
       ))}
     </dl>

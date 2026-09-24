@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Logo } from "../ui/Brand";
+import { ThemeToggle } from "../ui/ThemeToggle";
 import { displayName, initials, useUser } from "../../lib/useUser";
 
 const links = [
@@ -57,7 +58,7 @@ export function Navbar() {
   return (
     <>
     <header
-      className={`fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-ink/60 backdrop-blur-xl transition-transform duration-300 ease-out ${
+      className={`fixed inset-x-0 top-0 z-50 border-b border-fg/5 bg-ink/60 backdrop-blur-xl transition-transform duration-300 ease-out ${
         hidden && !open ? "-translate-y-full" : "translate-y-0"
       }`}
     >
@@ -65,19 +66,20 @@ export function Navbar() {
         <Logo />
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
           {links.map((l) => (
-            <Link key={l.href} href={l.href} className="text-sm font-semibold text-white/60 transition hover:text-white">
+            <Link key={l.href} href={l.href} className="text-sm font-semibold text-fg/60 transition hover:text-fg">
               {l.label}
             </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           {loading ? (
             <span className="h-9 w-24" aria-hidden />
           ) : user ? (
             <Link
               href="/profile"
-              className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] py-1 pl-1 pr-4 text-sm font-semibold transition hover:border-mint-bright/50"
+              className="flex items-center gap-2.5 rounded-full border border-fg/10 bg-fg/[0.04] py-1 pl-1 pr-4 text-sm font-semibold transition hover:border-mint-bright/50"
             >
               {avatar ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -91,12 +93,12 @@ export function Navbar() {
             </Link>
           ) : (
             <>
-              <Link href="/login" className="hidden text-sm font-semibold text-white/70 hover:text-white sm:block">
+              <Link href="/login" className="hidden text-sm font-semibold text-fg/70 hover:text-fg sm:block">
                 Log in
               </Link>
               <Link
                 href="/login?mode=signup"
-                className="rounded-full bg-gradient-to-r from-mint-bright to-[#b6ff5c] px-5 py-2 font-display text-base font-bold uppercase tracking-wide text-ink"
+                className="rounded-full bg-gradient-to-r from-[#3ddc97] to-[#b6ff5c] px-5 py-2 font-display text-base font-bold uppercase tracking-wide text-onmint"
               >
                 Get started
               </Link>
@@ -107,7 +109,7 @@ export function Navbar() {
             onClick={() => setOpen((o) => !o)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
-            className="grid h-10 w-10 place-items-center rounded-full border border-white/10 md:hidden"
+            className="grid h-10 w-10 place-items-center rounded-full border border-fg/10 md:hidden"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               {open ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
@@ -119,7 +121,7 @@ export function Navbar() {
 
       {open && (
         <nav
-          className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto border-t border-white/10 bg-ink/95 px-5 py-8 backdrop-blur-2xl md:hidden"
+          className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto border-t border-fg/10 bg-ink/95 px-5 py-8 backdrop-blur-2xl md:hidden"
           aria-label="Mobile"
           data-lenis-prevent
         >
@@ -129,7 +131,7 @@ export function Navbar() {
                 <Link
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="headline block border-b border-white/10 py-4 text-4xl"
+                  className="headline block border-b border-fg/10 py-4 text-4xl"
                 >
                   {l.label}
                 </Link>
@@ -140,7 +142,7 @@ export function Navbar() {
                 <Link
                   href="/login"
                   onClick={() => setOpen(false)}
-                  className="headline block border-b border-white/10 py-4 text-4xl text-mint-bright"
+                  className="headline block border-b border-fg/10 py-4 text-4xl text-mint-bright"
                 >
                   Log in
                 </Link>

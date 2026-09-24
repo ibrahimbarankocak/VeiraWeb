@@ -16,14 +16,14 @@ export function Faq() {
         <Reveal>
           <h2 className="headline text-center text-[clamp(3rem,7vw,6rem)]">FAQ&apos;s</h2>
         </Reveal>
-        <div className="mt-12 divide-y divide-white/10 border-y border-white/10">
+        <div className="mt-12 divide-y divide-fg/10 border-y border-fg/10">
           {faqs.map(([q, a]) => (
             <details key={q} className="group py-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-2xl font-bold uppercase tracking-wide">
                 {q}
                 <span className="text-mint-bright transition group-open:rotate-45">+</span>
               </summary>
-              <p className="mt-3 max-w-2xl text-white/60">{a}</p>
+              <p className="mt-3 max-w-2xl text-fg/60">{a}</p>
             </details>
           ))}
         </div>

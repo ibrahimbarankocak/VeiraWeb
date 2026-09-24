@@ -25,7 +25,7 @@ export default async function RacesPage() {
           <h1 className="headline text-[clamp(3rem,8vw,7rem)]">
             Find your <span className="grad-text">next start line</span>
           </h1>
-          <p className="mt-4 max-w-xl text-white/60">
+          <p className="mt-4 max-w-xl text-fg/60">
             {races.length.toLocaleString("en-US")} upcoming races across {countries} countries, updated hourly.
           </p>
         </div>

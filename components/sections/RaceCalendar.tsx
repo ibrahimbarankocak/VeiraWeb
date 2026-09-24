@@ -63,14 +63,14 @@ export function RaceCalendar() {
             <br />
             <span className="grad-text">one calendar</span>
           </h2>
-          <p className="mt-6 max-w-lg text-lg text-white/60">
+          <p className="mt-6 max-w-lg text-lg text-fg/60">
             Curated and full upcoming-race lists, fed by official federations and race platforms in Turkey and
             abroad. Filter by distance, sort by soonest, closest or popular, and pin the ones you&apos;re chasing.
             Try it — this is the real layout.
           </p>
-          <ul className="mt-8 grid max-w-lg grid-cols-2 gap-3 text-sm font-semibold text-white/80">
+          <ul className="mt-8 grid max-w-lg grid-cols-2 gap-3 text-sm font-semibold text-fg/80">
             {["Country-first filtering", "Also show races abroad", "GPS “closest” sort", "Registration links"].map((t) => (
-              <li key={t} className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+              <li key={t} className="rounded-xl border border-fg/10 bg-fg/[0.03] px-4 py-3">
                 {t}
               </li>
             ))}

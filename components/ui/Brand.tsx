@@ -20,7 +20,7 @@ export function Logo({ dark = false }: { dark?: boolean }) {
       </span>
       <span
         className={`font-display text-3xl font-bold lowercase leading-none tracking-tight ${
-          dark ? "text-ink" : "text-white"
+          dark ? "text-onmint" : "text-fg"
         }`}
       >
         veira

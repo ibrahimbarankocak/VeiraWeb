@@ -9,11 +9,15 @@ const config: Config = {
         display: ["var(--font-display)", "Impact", "sans-serif"],
       },
       colors: {
-        ink: "#050907",
-        panel: "#0c1512",
+        // Theme-aware tokens (values live in app/globals.css). Use text-fg / bg-fg/10 instead of white.
+        ink: "rgb(var(--c-ink) / <alpha-value>)",
+        panel: "rgb(var(--c-panel) / <alpha-value>)",
+        fg: "rgb(var(--c-fg) / <alpha-value>)",
+        onbright: "rgb(var(--c-onbright) / <alpha-value>)", // text on a bg-mint-bright fill
+        onmint: "#04150d", // always-dark text for the bright mint/lime gradient buttons
         mint: {
           DEFAULT: "#286848",
-          bright: "#3ddc97",
+          bright: "rgb(var(--c-mint-bright) / <alpha-value>)",
           light: "#d1f7e9",
         },
       },

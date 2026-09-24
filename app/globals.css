@@ -2,9 +2,88 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---- Theme tokens. Dark is the default; light applies via data-theme="light" or the OS setting. ---- */
+:root {
+  color-scheme: dark;
+  --c-ink: 5 9 7;
+  --c-panel: 12 21 18;
+  --c-fg: 255 255 255;
+  --c-mint-bright: 61 220 151;
+  --c-onbright: 4 21 13;
+  --g1: #d1f7e9;
+  --g2: #3ddc97;
+  --g3: #b6ff5c;
+  --glow: 0 0 28px rgba(61, 220, 151, 0.55);
+  /* tunnel rings, outermost first */
+  --ring-0: #d9fbe9; --ring-1: #a7f0cb; --ring-2: #5fe3a6; --ring-3: #2fbf83;
+  --ring-4: #1f9068; --ring-5: #166a4d; --ring-6: #104a37; --ring-7: #0a3025;
+  /* run scene: night */
+  --sk-sky: linear-gradient(to bottom, #020b07 0%, #06261a 42%, #0f6a49 76%, #3ddc97 100%);
+  --sk-far: #0f4a35; --sk-mid: #0a2f22; --sk-near: #051a12;
+  --sk-win0: #b6ff5c; --sk-win1: #3ddc97; --sk-win2: #d1f7e9;
+  --sk-night: 1; --sk-day: 0;
+  --sk-beam: rgba(182, 255, 92, 0.45);
+  --sk-cloud: #d1f7e9; --sk-cloud-op: 0.09;
+  --sk-lamp-op: 1;
+  --sk-road-a: #0b241a; --sk-road-b: #020a07; --sk-road-edge: rgba(61, 220, 151, 0.6); --sk-lane: #d1f7e9;
+  --sk-shadow: 0.35;
+  --blob-op: 1;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --c-ink: 243 248 244;
+  --c-panel: 255 255 255;
+  --c-fg: 9 34 24;
+  --c-mint-bright: 16 128 86;
+  --c-onbright: 255 255 255;
+  --g1: #0b6b46;
+  --g2: #17a06a;
+  --g3: #7aa60f;
+  --glow: none;
+  --ring-0: #9be8c1; --ring-1: #6fdaa5; --ring-2: #43c78c; --ring-3: #2aa673;
+  --ring-4: #1f8560; --ring-5: #17664a; --ring-6: #104a37; --ring-7: #0a3025;
+  /* run scene: sunny morning */
+  --sk-sky: linear-gradient(to bottom, #6ec3ee 0%, #b5e3f6 46%, #ffeac4 78%, #ffd08a 100%);
+  --sk-far: #b3d3cb; --sk-mid: #86b3a5; --sk-near: #4c7a6b;
+  --sk-win0: #fff2b8; --sk-win1: #e7f5ff; --sk-win2: #ffe0a0;
+  --sk-night: 0; --sk-day: 1;
+  --sk-beam: rgba(255, 236, 160, 0.6);
+  --sk-cloud: #ffffff; --sk-cloud-op: 0.8;
+  --sk-lamp-op: 0;
+  --sk-road-a: #56645f; --sk-road-b: #3a4642; --sk-road-edge: rgba(255, 255, 255, 0.5); --sk-lane: #ffffff;
+  --sk-shadow: 0.28;
+  --blob-op: 0.4;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --c-ink: 243 248 244;
+    --c-panel: 255 255 255;
+    --c-fg: 9 34 24;
+    --c-mint-bright: 16 128 86;
+    --c-onbright: 255 255 255;
+    --g1: #0b6b46;
+    --g2: #17a06a;
+    --g3: #7aa60f;
+    --glow: none;
+    --ring-0: #9be8c1; --ring-1: #6fdaa5; --ring-2: #43c78c; --ring-3: #2aa673;
+    --ring-4: #1f8560; --ring-5: #17664a; --ring-6: #104a37; --ring-7: #0a3025;
+    --sk-sky: linear-gradient(to bottom, #6ec3ee 0%, #b5e3f6 46%, #ffeac4 78%, #ffd08a 100%);
+    --sk-far: #b3d3cb; --sk-mid: #86b3a5; --sk-near: #4c7a6b;
+    --sk-win0: #fff2b8; --sk-win1: #e7f5ff; --sk-win2: #ffe0a0;
+    --sk-night: 0; --sk-day: 1;
+    --sk-beam: rgba(255, 236, 160, 0.6);
+    --sk-cloud: #ffffff; --sk-cloud-op: 0.8;
+    --sk-lamp-op: 0;
+    --sk-road-a: #56645f; --sk-road-b: #3a4642; --sk-road-edge: rgba(255, 255, 255, 0.5); --sk-lane: #ffffff;
+    --sk-shadow: 0.28;
+    --blob-op: 0.4;
+  }
+}
+
 html {
   scroll-behavior: smooth;
-  background: #050907;
+  background: rgb(var(--c-ink));
 }
 
 /* Lenis smooth scrolling */
@@ -20,8 +99,8 @@ html.lenis body {
 }
 
 body {
-  background: #050907;
-  color: #f4faf7;
+  background: rgb(var(--c-ink));
+  color: rgb(var(--c-fg));
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -32,16 +111,16 @@ body {
     @apply font-display font-extrabold uppercase leading-[0.92] tracking-tight;
   }
   .grad-text {
-    background: linear-gradient(90deg, #d1f7e9 0%, #3ddc97 55%, #b6ff5c 100%);
+    background: linear-gradient(90deg, var(--g1) 0%, var(--g2) 55%, var(--g3) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
   .glow-text {
-    text-shadow: 0 0 28px rgba(61, 220, 151, 0.55);
+    text-shadow: var(--glow);
   }
   .btn-mint {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 font-display text-lg font-bold uppercase tracking-wide text-ink transition;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 font-display text-lg font-bold uppercase tracking-wide text-onmint transition;
     background: linear-gradient(90deg, #3ddc97, #b6ff5c);
     box-shadow: 0 0 40px rgba(61, 220, 151, 0.35);
   }
@@ -58,6 +137,7 @@ body {
   position: absolute;
   border-radius: 9999px;
   filter: blur(90px);
+  opacity: var(--blob-op, 1);
   pointer-events: none;
 }
 
@@ -111,72 +191,67 @@ body {
   animation: sk-sweep 11s ease-in-out infinite;
 }
 
-/* Run cycle: 0.72s per stride. Positive rotation swings a limb backwards, negative forwards. */
+/* Window tones and slow fades (theme switch) */
+.sk-w0 { fill: var(--sk-win0); }
+.sk-w1 { fill: var(--sk-win1); }
+.sk-w2 { fill: var(--sk-win2); }
+.sk-fade { transition: opacity 0.6s ease; }
+@keyframes sk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.sk-spin { animation: sk-spin 240s linear infinite; }
+
+/* Run cycle: 0.72s per stride. Positive rotation swings a limb backwards (or points a toe down), negative forwards. */
 @keyframes rn-bob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes rn-torso {
+  0%, 100% { transform: rotate(8deg); }
+  50% { transform: rotate(4.5deg); }
+}
+@keyframes rn-head {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.8px); }
+}
+@keyframes rn-pony {
+  0%, 100% { transform: rotate(-7deg); }
+  50% { transform: rotate(9deg); }
 }
 @keyframes rn-thigh {
-  0%,
-  100% {
-    transform: rotate(-48deg);
-  }
-  50% {
-    transform: rotate(28deg);
-  }
+  0%, 100% { transform: rotate(-48deg); }
+  50% { transform: rotate(28deg); }
 }
 @keyframes rn-shin {
-  0% {
-    transform: rotate(8deg);
-  }
-  30% {
-    transform: rotate(22deg);
-  }
-  55% {
-    transform: rotate(38deg);
-  }
-  78% {
-    transform: rotate(105deg);
-  }
-  100% {
-    transform: rotate(8deg);
-  }
+  0% { transform: rotate(8deg); }
+  30% { transform: rotate(22deg); }
+  55% { transform: rotate(38deg); }
+  78% { transform: rotate(105deg); }
+  100% { transform: rotate(8deg); }
+}
+@keyframes rn-foot {
+  0% { transform: rotate(-14deg); }
+  30% { transform: rotate(-2deg); }
+  55% { transform: rotate(40deg); }
+  78% { transform: rotate(22deg); }
+  100% { transform: rotate(-14deg); }
 }
 @keyframes rn-arm {
-  0%,
-  100% {
-    transform: rotate(-55deg);
-  }
-  50% {
-    transform: rotate(45deg);
-  }
+  0%, 100% { transform: rotate(-55deg); }
+  50% { transform: rotate(45deg); }
 }
 @keyframes rn-fore {
-  0%,
-  100% {
-    transform: rotate(-95deg);
-  }
-  50% {
-    transform: rotate(-62deg);
-  }
+  0%, 100% { transform: rotate(-100deg); }
+  50% { transform: rotate(-70deg); }
 }
-.rn-bob {
-  animation: rn-bob 0.36s ease-in-out infinite;
-}
-.rn-thigh {
-  animation: rn-thigh 0.72s ease-in-out infinite;
-}
-.rn-shin {
-  animation: rn-shin 0.72s ease-in-out infinite;
-}
-.rn-arm {
-  animation: rn-arm 0.72s ease-in-out infinite;
-}
-.rn-fore {
-  animation: rn-fore 0.72s ease-in-out infinite;
-}
+.rn-bob { animation: rn-bob 0.36s ease-in-out infinite; }
+.rn-torso { animation: rn-torso 0.72s ease-in-out infinite; }
+.rn-head { animation: rn-head 0.36s ease-in-out infinite; }
+.rn-pony { animation: rn-pony 0.72s ease-in-out infinite; }
+.rn-thigh { animation: rn-thigh 0.72s ease-in-out infinite; }
+.rn-shin { animation: rn-shin 0.72s ease-in-out infinite; }
+.rn-foot { animation: rn-foot 0.72s ease-in-out infinite; }
+.rn-arm { animation: rn-arm 0.72s ease-in-out infinite; }
+.rn-fore { animation: rn-fore 0.72s ease-in-out infinite; }
