@@ -6,8 +6,8 @@ import { RacesIntro } from "../../components/races/RacesIntro";
 import { getRaces } from "../../lib/races";
 
 export const metadata: Metadata = {
-  title: "Race calendar — Veira",
-  description: "Every upcoming race in Türkiye and abroad, in one calendar — searchable, filterable, sortable.",
+  title: "Yarış takvimi — Veira",
+  description: "Türkiye'de ve yurt dışında yaklaşan her yarış, tek takvimde — aranabilir, filtrelenebilir, sıralanabilir.",
 };
 
 export const revalidate = 3600;

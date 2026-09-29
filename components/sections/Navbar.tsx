@@ -7,10 +7,12 @@ import { ThemeToggle } from "../ui/ThemeToggle";
 import { LanguageSwitcher } from "../ui/LanguageSwitcher";
 import { useI18n } from "../../lib/i18n/context";
 import { displayName, initials, useUser } from "../../lib/useUser";
+import { useIsAdmin } from "../../lib/useAdmin";
 
 export function Navbar() {
   const { t } = useI18n();
   const { user, loading } = useUser();
+  const { isAdmin } = useIsAdmin();
   const [open, setOpen] = useState(false);
 
   const links = [
@@ -79,6 +81,14 @@ export function Navbar() {
         <div className="flex items-center gap-2 sm:gap-3">
           <LanguageSwitcher className="hidden sm:grid" />
           <ThemeToggle />
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="hidden rounded-full border border-mint-bright/30 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-mint-bright transition hover:bg-mint-bright/10 sm:block"
+            >
+              Admin
+            </Link>
+          )}
           {loading ? (
             <span className="h-9 w-24" aria-hidden />
           ) : user ? (
@@ -154,6 +164,17 @@ export function Navbar() {
                   className="headline block border-b border-fg/10 py-4 text-4xl text-mint-bright"
                 >
                   {t("nav.login")}
+                </Link>
+              </li>
+            )}
+            {isAdmin && (
+              <li>
+                <Link
+                  href="/admin"
+                  onClick={() => setOpen(false)}
+                  className="headline block border-b border-fg/10 py-4 text-4xl text-mint-bright"
+                >
+                  Admin
                 </Link>
               </li>
             )}

@@ -3,6 +3,7 @@ import { Problem } from "../components/sections/Problem";
 import { Marquee } from "../components/sections/Marquee";
 import { RaceCalendar } from "../components/sections/RaceCalendar";
 import { PlanTeaser } from "../components/sections/PlanTeaser";
+import { ClubsTeaser } from "../components/sections/ClubsTeaser";
 import { Pricing } from "../components/sections/Pricing";
 import { Faq } from "../components/sections/Faq";
 import { FinalCta, Footer } from "../components/sections/Footer";
@@ -75,6 +76,7 @@ export default async function HomePage() {
         <RaceCalendar />
         {races.length > 0 && <RaceCollage races={pickCollage(races)} total={races.length} />}
         <PlanTeaser />
+        <ClubsTeaser />
         <Pricing />
         <Faq />
         <FinalCta />

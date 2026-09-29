@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import type { DistanceBucket, Race, RaceType } from "../../lib/races";
 import { useI18n } from "../../lib/i18n/context";
 import { MONTHS_LONG, MONTHS_SHORT } from "../../lib/i18n/translations";
@@ -37,62 +38,57 @@ function RaceCard({ r, lang, t }: { r: Race; lang: "en" | "tr" | "es"; t: (path:
   const [y, m, d] = r.date.split("-").map(Number);
   const [imgOk, setImgOk] = useState(true);
   return (
-    <li className="group flex flex-col overflow-hidden rounded-2xl border border-fg/10 bg-panel/70 transition hover:border-mint-bright/40">
-      <div className="relative h-36 bg-gradient-to-br from-mint/60 via-[#0d3a26] to-ink">
-        {r.image && imgOk && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={r.image}
-            alt=""
-            loading="lazy"
-            referrerPolicy="no-referrer"
-            onError={() => setImgOk(false)}
-            className="h-full w-full object-cover opacity-80 transition group-hover:opacity-100"
-          />
-        )}
-        <div className="absolute left-3 top-3 rounded-xl bg-ink/80 px-3 py-1.5 text-center leading-none backdrop-blur">
-          <p className="headline text-2xl">{d}</p>
-          <p className="text-[10px] font-bold uppercase text-mint-bright">
-            {MONTHS_SHORT[lang][m - 1]} {y}
+    <li>
+      <Link
+        href={`/races/${r.id}`}
+        className="group flex h-full flex-col overflow-hidden rounded-2xl border border-fg/10 bg-panel/70 transition hover:border-mint-bright/40"
+      >
+        <div className="relative h-36 bg-gradient-to-br from-mint/60 via-[#0d3a26] to-ink">
+          {r.image && imgOk && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={r.image}
+              alt=""
+              loading="lazy"
+              referrerPolicy="no-referrer"
+              onError={() => setImgOk(false)}
+              className="h-full w-full object-cover opacity-80 transition group-hover:opacity-100"
+            />
+          )}
+          <div className="absolute left-3 top-3 rounded-xl bg-ink/80 px-3 py-1.5 text-center leading-none backdrop-blur">
+            <p className="headline text-2xl">{d}</p>
+            <p className="text-[10px] font-bold uppercase text-mint-bright">
+              {MONTHS_SHORT[lang][m - 1]} {y}
+            </p>
+          </div>
+          <span className="absolute right-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-fg/80 backdrop-blur">
+            {t(`raceExplorer.${TYPE_KEY[r.type]}`)}
+          </span>
+        </div>
+        <div className="flex flex-1 flex-col p-4">
+          <h3 className="font-display text-2xl font-bold uppercase leading-tight">{r.name}</h3>
+          <p className="mt-1 text-sm text-fg/55">
+            {r.location || t("raceExplorer.locationTba")}
+            {r.location && !r.location.toLowerCase().includes(r.country.toLowerCase()) ? ` · ${r.country}` : ""}
           </p>
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {r.distances.length ? (
+              r.distances.slice(0, 6).map((k) => (
+                <span key={k} className="rounded-md bg-mint-bright/15 px-2 py-0.5 text-[11px] font-bold text-mint-bright">
+                  {fmtKm(k)}
+                </span>
+              ))
+            ) : (
+              <span className="text-[11px] font-semibold text-fg/35">{t("raceExplorer.distanceTba")}</span>
+            )}
+            {r.distances.length > 6 && <span className="text-[11px] text-fg/40">+{r.distances.length - 6}</span>}
+          </div>
+          <div className="mt-auto flex items-center gap-1.5 pt-4 text-sm font-bold text-mint-bright">
+            {t("raceExplorer.registrationDetails")}
+            <span aria-hidden className="transition group-hover:translate-x-0.5">→</span>
+          </div>
         </div>
-        <span className="absolute right-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-fg/80 backdrop-blur">
-          {t(`raceExplorer.${TYPE_KEY[r.type]}`)}
-        </span>
-      </div>
-      <div className="flex flex-1 flex-col p-4">
-        <h3 className="font-display text-2xl font-bold uppercase leading-tight">{r.name}</h3>
-        <p className="mt-1 text-sm text-fg/55">
-          {r.location || t("raceExplorer.locationTba")}
-          {r.location && !r.location.toLowerCase().includes(r.country.toLowerCase()) ? ` · ${r.country}` : ""}
-        </p>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {r.distances.length ? (
-            r.distances.slice(0, 6).map((k) => (
-              <span key={k} className="rounded-md bg-mint-bright/15 px-2 py-0.5 text-[11px] font-bold text-mint-bright">
-                {fmtKm(k)}
-              </span>
-            ))
-          ) : (
-            <span className="text-[11px] font-semibold text-fg/35">{t("raceExplorer.distanceTba")}</span>
-          )}
-          {r.distances.length > 6 && <span className="text-[11px] text-fg/40">+{r.distances.length - 6}</span>}
-        </div>
-        <div className="mt-auto pt-4">
-          {r.url ? (
-            <a
-              href={r.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-mint-bright hover:underline"
-            >
-              {t("raceExplorer.registrationDetails")} <span aria-hidden>↗</span>
-            </a>
-          ) : (
-            <span className="text-xs font-semibold text-fg/30">{t("raceExplorer.noRegistrationLink")}</span>
-          )}
-        </div>
-      </div>
+      </Link>
     </li>
   );
 }

@@ -43,6 +43,7 @@ export function Footer() {
             <p className={colTitle}>{t("footer.productHeading")}</p>
             <Link href="/#features" className={colLink}>{t("footer.linkFeatures")}</Link>
             <Link href="/#plan" className={colLink}>{t("footer.linkPlan")}</Link>
+            <Link href="/#clubs" className={colLink}>{t("footer.linkClubs")}</Link>
             <Link href="/races" className={colLink}>{t("footer.linkCalendar")}</Link>
             <Link href="/#pricing" className={colLink}>{t("footer.linkPricing")}</Link>
           </nav>

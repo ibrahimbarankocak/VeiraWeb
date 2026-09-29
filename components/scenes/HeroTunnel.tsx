@@ -1,11 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { RunScene } from "./RunScene";
 import { range, smooth, useMap } from "./hooks";
 import { useI18n } from "../../lib/i18n/context";
+
+// Hundreds of decorative SVG nodes (city, stars, runners) — load client-side only, after the
+// critical page content, instead of bloating the server-rendered HTML with markup that's purely
+// cosmetic and behind a clip-path until the visitor scrolls.
+const RunScene = dynamic(() => import("./RunScene").then((m) => m.RunScene), { ssr: false });
 
 // Concentric rounded "tunnel" rings, outermost first, drawn as crisp vector bands in a 1000 x 900 box.
 // Colours come from the theme (--ring-0 .. --ring-7 in globals.css).

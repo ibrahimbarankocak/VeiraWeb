@@ -20,29 +20,25 @@ function interpolate(s: string, vars?: Vars): string {
 }
 
 /**
- * Language state lives entirely on the client. It always starts as "en" — matching what the
- * server renders — and only switches (to a saved choice, or a guess from the browser) after
- * mount, so there is never a hydration mismatch. Returning non-English visitors see a brief
- * flash of English before their language kicks in.
+ * Turkish is the site's main language. State lives entirely on the client and always starts
+ * as "tr" — matching what the server renders — switching only after mount (to a saved choice)
+ * so there is never a hydration mismatch. Visitors who have explicitly picked English or
+ * Spanish before get that back; everyone else sees Turkish, with no browser-language guessing
+ * overriding it.
  */
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("en");
+  const [lang, setLangState] = useState<Lang>("tr");
 
   useEffect(() => {
-    let initial: Lang | null = null;
+    let saved: Lang | null = null;
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved === "en" || saved === "tr" || saved === "es") initial = saved;
+      const v = localStorage.getItem(STORAGE_KEY);
+      if (v === "en" || v === "tr" || v === "es") saved = v;
     } catch {
-      /* private mode: fall through to the browser-language guess */
+      /* private mode: nothing saved, Turkish stays the default */
     }
-    if (!initial) {
-      const nav = navigator.language.toLowerCase();
-      if (nav.startsWith("tr")) initial = "tr";
-      else if (nav.startsWith("es")) initial = "es";
-    }
-    if (initial && initial !== "en") setLangState(initial);
-    document.documentElement.lang = initial ?? "en";
+    if (saved && saved !== "tr") setLangState(saved);
+    document.documentElement.lang = saved ?? "tr";
   }, []);
 
   const setLang = (l: Lang) => {

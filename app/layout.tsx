@@ -21,15 +21,15 @@ const sans = Manrope({
 
 export const metadata: Metadata = {
   other: { "darkreader-lock": "" },
-  title: "Veira — The running companion",
+  title: "Veira — Koşu arkadaşın",
   description:
-    "Race calendar, shoe tracking and a weekly league in one app, for runners from 5K to ultra — in Turkey and beyond.",
+    "Yarış takvimi, ayakkabı takibi ve haftalık lig tek uygulamada — 5K'dan ultraya, Türkiye ve ötesindeki koşucular için.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
-      lang="en"
+      lang="tr"
       data-scroll-behavior="smooth"
       className={`${display.variable} ${sans.variable}`}
       suppressHydrationWarning

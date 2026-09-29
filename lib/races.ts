@@ -30,6 +30,48 @@ type Row = {
   sisteme_eklenme_tarihi: string | null;
 };
 
+/** Extra columns only the race detail page needs — almost all are blank on most rows today. */
+type DetailRow = Row & {
+  irtifa_kazanimi_m: string | null;
+  zorluk_seviyesi: string | null;
+  doga_dokusu: string | null;
+  enlem: string | number | null;
+  boylam: string | number | null;
+  parkur_harita_linki: string | null;
+  organizator: string | null;
+  iletisim_bilgileri: string | null;
+  kayit_baslangic_tarihi: string | null;
+  kayit_bitis_tarihi: string | null;
+  kontenjan_doluluk_yuzdesi: string | number | null;
+  ucret: string | number | null;
+  para_birimi: string | null;
+  sure_siniri_dakika: string | number | null;
+  oduller: string | null;
+  sponsorlar: string | null;
+  beklenen_hava_durumu: string | null;
+  status: string | null;
+};
+
+export type RaceDetail = Race & {
+  elevationM: number | null;
+  difficulty: string | null;
+  terrainNote: string | null;
+  lat: number | null;
+  lng: number | null;
+  mapUrl: string | null;
+  organizer: string | null;
+  contact: string | null;
+  regOpen: string | null;
+  regClose: string | null;
+  capacityPct: number | null;
+  fee: number | null;
+  currency: string | null;
+  timeLimitMin: number | null;
+  prizes: string | null;
+  sponsors: string | null;
+  weather: string | null;
+};
+
 const MONTHS: Record<string, number> = {
   ocak: 1, subat: 2, şubat: 2, mart: 3, nisan: 4, mayis: 5, mayıs: 5, haziran: 6,
   temmuz: 7, agustos: 8, ağustos: 8, eylul: 9, eylül: 9, ekim: 10, kasim: 11, kasım: 11, aralik: 12, aralık: 12,
@@ -123,4 +165,68 @@ export async function getRaces(): Promise<Race[]> {
     });
   }
   return races;
+}
+
+const num = (v: string | number | null): number | null => {
+  if (v === null || v === "") return null;
+  const n = typeof v === "number" ? v : parseFloat(v.replace(",", "."));
+  return Number.isFinite(n) ? n : null;
+};
+
+const DETAIL_COLUMNS =
+  COLUMNS +
+  ",irtifa_kazanimi_m,zorluk_seviyesi,doga_dokusu,enlem,boylam,parkur_harita_linki,organizator,iletisim_bilgileri," +
+  "kayit_baslangic_tarihi,kayit_bitis_tarihi,kontenjan_doluluk_yuzdesi,ucret,para_birimi,sure_siniri_dakika," +
+  "oduller,sponsorlar,beklenen_hava_durumu,status";
+
+/** A single approved race with every detail column. Returns null if not found (or not approved). */
+export async function getRaceById(id: string): Promise<RaceDetail | null> {
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const res = await fetch(`${base}/rest/v1/races?select=${DETAIL_COLUMNS}&id=eq.${encodeURIComponent(id)}&status=eq.approved`, {
+    headers: { apikey: key, Authorization: `Bearer ${key}` },
+    next: { revalidate: 3600 },
+  });
+  if (!res.ok) throw new Error(`Supabase race request failed: ${res.status}`);
+  const rows: DetailRow[] = await res.json();
+  const r = rows[0];
+  if (!r || !r.yaris_adi) return null;
+
+  const date = parseDate(r.tarih);
+  const distances = parseDistances(r.uzunluk_km);
+  const buckets = [...new Set(distances.map(bucketOf).filter((b): b is DistanceBucket => !!b))];
+  const lat = num(r.enlem);
+  const lng = num(r.boylam);
+
+  return {
+    id: r.id,
+    name: r.yaris_adi_en || r.yaris_adi,
+    nameLocal: r.yaris_adi,
+    date: date ?? "",
+    location: r.konum_metin ?? "",
+    country: r.country ?? "Unknown",
+    distances,
+    buckets,
+    type: TYPES[(r.zemin_turu ?? "").toLocaleLowerCase("tr")] ?? "Other",
+    url: r.kayit_url,
+    image: r.thumbnail_url,
+    added: r.sisteme_eklenme_tarihi ?? "",
+    elevationM: num(r.irtifa_kazanimi_m),
+    difficulty: r.zorluk_seviyesi || null,
+    terrainNote: r.doga_dokusu || null,
+    lat,
+    lng,
+    mapUrl: r.parkur_harita_linki || (lat != null && lng != null ? `https://www.google.com/maps?q=${lat},${lng}` : null),
+    organizer: r.organizator || null,
+    contact: r.iletisim_bilgileri || null,
+    regOpen: parseDate(r.kayit_baslangic_tarihi),
+    regClose: parseDate(r.kayit_bitis_tarihi),
+    capacityPct: num(r.kontenjan_doluluk_yuzdesi),
+    fee: num(r.ucret),
+    currency: r.para_birimi || null,
+    timeLimitMin: num(r.sure_siniri_dakika),
+    prizes: r.oduller || null,
+    sponsors: r.sponsorlar || null,
+    weather: r.beklenen_hava_durumu || null,
+  };
 }
