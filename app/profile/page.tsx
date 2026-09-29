@@ -7,6 +7,7 @@ import { Navbar } from "../../components/sections/Navbar";
 import { Footer } from "../../components/sections/Footer";
 import { getSupabase } from "../../lib/supabase";
 import { displayName, initials, useUser } from "../../lib/useUser";
+import { useI18n } from "../../lib/i18n/context";
 
 type Profile = {
   username: string | null;
@@ -17,15 +18,22 @@ type Profile = {
   created_at: string | null;
 };
 
-const fmtDate = (iso?: string | null) =>
-  iso ? new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "—";
-
 export default function ProfilePage() {
+  const { t, lang } = useI18n();
   const router = useRouter();
   const { user, loading } = useUser();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileLoaded, setProfileLoaded] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
+
+  const fmtDate = (iso?: string | null) =>
+    iso
+      ? new Date(iso).toLocaleDateString(lang === "tr" ? "tr-TR" : lang === "es" ? "es-ES" : "en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : "—";
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
@@ -59,11 +67,18 @@ export default function ProfilePage() {
   const avatar = profile?.avatar_url || (user?.user_metadata?.avatar_url as string | undefined);
   const provider = (user?.app_metadata?.provider as string | undefined) ?? "email";
   const role = profile?.role && profile.role !== "user" ? profile.role : null;
+  const locale = lang === "tr" ? "tr-TR" : lang === "es" ? "es-ES" : "en-US";
 
   const stats = [
-    ["Total km", profile ? Number(profile.total_km ?? 0).toLocaleString("en-US", { maximumFractionDigits: 1 }) : "—"],
-    ["Shoes", profile ? String(profile.shoe_count ?? 0) : "—"],
-    ["Member since", fmtDate(profile?.created_at ?? user?.created_at)],
+    [t("profile.totalKm"), profile ? Number(profile.total_km ?? 0).toLocaleString(locale, { maximumFractionDigits: 1 }) : "—"],
+    [t("profile.shoes"), profile ? String(profile.shoe_count ?? 0) : "—"],
+    [t("profile.memberSince"), fmtDate(profile?.created_at ?? user?.created_at)],
+  ];
+
+  const accountRows = [
+    [t("profile.emailLabel"), user?.email ?? "—"],
+    [t("profile.signInMethod"), provider === "google" ? t("profile.signInGoogle") : t("profile.signInEmail")],
+    [t("profile.emailStatus"), user?.email_confirmed_at ? t("profile.confirmed") : t("profile.notConfirmed")],
   ];
 
   return (
@@ -73,10 +88,10 @@ export default function ProfilePage() {
         <div className="blob -left-40 top-0 h-[28rem] w-[28rem] bg-mint-bright/25" />
         <div className="relative mx-auto max-w-3xl">
           {!user ? (
-            <p className="py-24 text-center text-fg/50">Loading your profile…</p>
+            <p className="py-24 text-center text-fg/50">{t("profile.loading")}</p>
           ) : (
             <>
-              <p className="eyebrow mb-3">My profile</p>
+              <p className="eyebrow mb-3">{t("profile.eyebrow")}</p>
               <div className="flex flex-wrap items-center gap-5">
                 {avatar ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -102,20 +117,16 @@ export default function ProfilePage() {
               <dl className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-fg/10 bg-fg/10 sm:grid-cols-3">
                 {stats.map(([k, v]) => (
                   <div key={k} className="bg-panel px-5 py-6">
-                    <dd className="headline text-3xl text-mint-bright">{profileLoaded || k === "Member since" ? v : "…"}</dd>
+                    <dd className="headline text-3xl text-mint-bright">{profileLoaded || k === t("profile.memberSince") ? v : "…"}</dd>
                     <dt className="mt-1 text-xs font-semibold uppercase tracking-widest text-fg/45">{k}</dt>
                   </div>
                 ))}
               </dl>
 
               <div className="mt-6 rounded-2xl border border-fg/10 bg-panel/70 p-6">
-                <h2 className="headline text-2xl">Account</h2>
+                <h2 className="headline text-2xl">{t("profile.account")}</h2>
                 <dl className="mt-4 divide-y divide-fg/10 text-sm">
-                  {[
-                    ["Email", user.email ?? "—"],
-                    ["Sign-in method", provider === "google" ? "Google" : "Email & password"],
-                    ["Email status", user.email_confirmed_at ? "Confirmed" : "Not confirmed"],
-                  ].map(([k, v]) => (
+                  {accountRows.map(([k, v]) => (
                     <div key={k} className="flex flex-wrap justify-between gap-2 py-3">
                       <dt className="text-fg/50">{k}</dt>
                       <dd className="font-semibold">{v}</dd>
@@ -126,19 +137,17 @@ export default function ProfilePage() {
 
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link href="/races" className="btn-mint">
-                  Browse races
+                  {t("profile.browseRaces")}
                 </Link>
                 <button
                   onClick={signOut}
                   disabled={signingOut}
                   className="rounded-full border border-fg/20 px-7 py-3.5 font-display text-lg font-bold uppercase tracking-wide transition hover:border-red-400 hover:text-red-300 disabled:opacity-60"
                 >
-                  {signingOut ? "Signing out…" : "Sign out"}
+                  {signingOut ? t("profile.signingOut") : t("profile.signOut")}
                 </button>
               </div>
-              <p className="mt-6 text-xs text-fg/35">
-                Shoe tracking, league rank and clubs live in the Veira mobile app.
-              </p>
+              <p className="mt-6 text-xs text-fg/35">{t("profile.footnote")}</p>
             </>
           )}
         </div>

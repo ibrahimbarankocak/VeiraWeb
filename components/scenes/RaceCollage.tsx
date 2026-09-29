@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRef } from "react";
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { range, smooth, useMap } from "./hooks";
+import { useI18n } from "../../lib/i18n/context";
+import { MONTHS_SHORT } from "../../lib/i18n/translations";
 
 export type CollageRace = { id: string; name: string; date: string; country: string; image: string | null };
 
@@ -12,13 +14,8 @@ const START: [number, number, number][] = [[-58, -48, -28], [58, -52, 24], [-62,
 const END: [number, number, number][] = [[-9, -6, -9], [8, -9, 7], [-6, 7, 5], [7, 6, -6], [-1, -1, -2], [2, 1, 3]];
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
-const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const fmt = (iso: string) => {
-  const [, m, d] = iso.split("-").map(Number);
-  return `${d} ${MONTH[m - 1]}`;
-};
-
 export function RaceCollage({ races, total }: { races: CollageRace[]; total: number }) {
+  const { t, lang } = useI18n();
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress: p } = useScroll({ target: ref, offset: ["start start", "end end"] });
@@ -39,17 +36,17 @@ export function RaceCollage({ races, total }: { races: CollageRace[]; total: num
           style={reduce ? undefined : { opacity: label, y: labelY }}
           className="absolute inset-x-0 top-[11%] z-30 px-5 text-center"
         >
-          <p className="eyebrow mb-3">Race calendar</p>
+          <p className="eyebrow mb-3">{t("collage.eyebrow")}</p>
           <h2 className="headline text-[clamp(2.2rem,5vw,4.6rem)]">
-            {total.toLocaleString("en-US")} upcoming races.
+            {t("collage.headline", { n: total.toLocaleString(lang === "tr" ? "tr-TR" : lang === "es" ? "es-ES" : "en-US") })}
             <br />
-            <span className="grad-text">One calendar.</span>
+            <span className="grad-text">{t("collage.headlineGrad")}</span>
           </h2>
         </motion.div>
 
         <motion.div style={{ scale: reduce ? 1 : zoom }} className="absolute inset-x-0 bottom-0 top-[12vh]">
           {races.slice(0, 6).map((r, i) => (
-            <PileCard key={r.id} i={i} race={r} e={e} />
+            <PileCard key={r.id} i={i} race={r} e={e} lang={lang} />
           ))}
         </motion.div>
 
@@ -58,7 +55,7 @@ export function RaceCollage({ races, total }: { races: CollageRace[]; total: num
           className="absolute inset-x-0 bottom-[9%] z-30 text-center"
         >
           <Link href="/races" className="btn-mint">
-            Browse all races
+            {t("collage.cta")}
           </Link>
         </motion.div>
       </div>
@@ -66,12 +63,13 @@ export function RaceCollage({ races, total }: { races: CollageRace[]; total: num
   );
 }
 
-function PileCard({ i, race, e }: { i: number; race: CollageRace; e: MotionValue<number> }) {
+function PileCard({ i, race, e, lang }: { i: number; race: CollageRace; e: MotionValue<number>; lang: keyof typeof MONTHS_SHORT }) {
   const [sx, sy, sr] = START[i % START.length];
   const [ex, ey, er] = END[i % END.length];
   const x = useTransform(e, (v) => `${lerp(sx, ex, v)}vw`);
   const y = useTransform(e, (v) => `${lerp(sy, ey, v)}vh`);
   const rotate = useTransform(e, (v) => lerp(sr, er, v));
+  const [, m, d] = race.date.split("-").map(Number);
   return (
     <motion.figure
       style={{ x, y, rotate, zIndex: i, width: "var(--cw)", aspectRatio: "4 / 5" }}
@@ -83,7 +81,7 @@ function PileCard({ i, race, e }: { i: number; race: CollageRace; e: MotionValue
       )}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/95 via-ink/60 to-transparent p-3 pt-10">
         <p className="text-[10px] font-bold uppercase tracking-widest text-mint-bright">
-          {fmt(race.date)} · {race.country}
+          {d} {MONTHS_SHORT[lang][m - 1]} · {race.country}
         </p>
         <p className="mt-0.5 line-clamp-2 font-display text-lg font-bold uppercase leading-tight">{race.name}</p>
       </div>

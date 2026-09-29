@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { RunScene } from "./RunScene";
 import { range, smooth, useMap } from "./hooks";
+import { useI18n } from "../../lib/i18n/context";
 
 // Concentric rounded "tunnel" rings, outermost first, drawn as crisp vector bands in a 1000 x 900 box.
 // Colours come from the theme (--ring-0 .. --ring-7 in globals.css).
@@ -41,33 +42,36 @@ const BANDS = Array.from({ length: N }, (_, i) => {
 /** Ring box width in px. Capped by screen height too, so the rings never crowd the headline and buttons. */
 const bOf = (w: number, h: number) => Math.min(620, Math.max(260, Math.min(w * 0.4, h * 0.55)));
 
-const Headline = () => (
-  <>
-    <p className="eyebrow mb-4">The running companion</p>
-    <h1 className="headline mx-auto max-w-[95rem] text-[clamp(2.4rem,min(7vw,11vh),7.5rem)]">
-      The smartest way to
-      <br />
-      <span className="grad-text">find your next race</span>
-    </h1>
-    <p className="mx-auto mt-5 hidden max-w-2xl text-lg text-fg/65 sm:block md:text-xl [@media(max-height:760px)]:hidden">
-      Discover races, track every kilometer on every shoe, and climb the weekly league — all in one app built by
-      runners, for runners.
-    </p>
-    <div className="mt-7 flex flex-wrap items-center justify-center gap-4">
-      <Link href="/login?mode=signup" className="btn-mint">
-        Join Veira free
-      </Link>
-      <Link
-        href="/races"
-        className="rounded-full border border-fg/25 bg-ink/60 px-7 py-3.5 font-display text-lg font-bold uppercase tracking-wide text-fg backdrop-blur transition hover:border-mint-bright hover:text-mint-bright"
-      >
-        See the race calendar
-      </Link>
-    </div>
-  </>
-);
+function Headline() {
+  const { t } = useI18n();
+  return (
+    <>
+      <p className="eyebrow mb-4">{t("hero.eyebrow")}</p>
+      <h1 className="headline mx-auto max-w-[95rem] text-[clamp(2.4rem,min(7vw,11vh),7.5rem)]">
+        {t("hero.headline1")} {t("hero.headline2")}
+        <br />
+        <span className="grad-text">{t("hero.headline3")}</span>
+      </h1>
+      <p className="mx-auto mt-5 hidden max-w-2xl text-lg text-fg/65 sm:block md:text-xl [@media(max-height:760px)]:hidden">
+        {t("hero.body")}
+      </p>
+      <div className="mt-7 flex flex-wrap items-center justify-center gap-4">
+        <Link href="/login?mode=signup" className="btn-mint">
+          {t("hero.ctaPrimary")}
+        </Link>
+        <Link
+          href="/races"
+          className="rounded-full border border-fg/25 bg-ink/60 px-7 py-3.5 font-display text-lg font-bold uppercase tracking-wide text-fg backdrop-blur transition hover:border-mint-bright hover:text-mint-bright"
+        >
+          {t("hero.ctaSecondary")}
+        </Link>
+      </div>
+    </>
+  );
+}
 
 export function HeroTunnel() {
+  const { t } = useI18n();
   const section = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
@@ -155,10 +159,10 @@ export function HeroTunnel() {
             className="absolute inset-x-0 top-[12%] z-10 px-5 text-center"
           >
             <h2 className="headline mx-auto max-w-4xl text-[clamp(2.4rem,min(7vw,11vh),6.5rem)] text-fg drop-shadow-[0_2px_20px_rgb(var(--c-ink)/0.6)]">
-              Race day is <span className="grad-text">closer</span> than you think
+              {t("hero.overlayHeadline1")} <span className="grad-text">{t("hero.overlayHeadline2")}</span>
             </h2>
             <Link href="/races" className="btn-mint mt-8">
-              Find your race
+              {t("hero.overlayCta")}
             </Link>
           </motion.div>
         </motion.div>
@@ -188,14 +192,14 @@ export function HeroTunnel() {
   );
 }
 
-const stats = [
-  ["5K → ULTRA", "every distance"],
-  ["TR + EU", "country-tagged races"],
-  ["WEEKLY", "league resets"],
-  ["3 SOURCES+", "official federations"],
-];
-
 export function HeroStats() {
+  const { t } = useI18n();
+  const stats = [
+    [t("hero.stat1Value"), t("hero.stat1Label")],
+    [t("hero.stat2Value"), t("hero.stat2Label")],
+    [t("hero.stat3Value"), t("hero.stat3Label")],
+    [t("hero.stat4Value"), t("hero.stat4Label")],
+  ];
   return (
     <dl className="mx-auto -mt-1 grid max-w-5xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-fg/10 bg-fg/10 md:grid-cols-4">
       {stats.map(([a, b]) => (

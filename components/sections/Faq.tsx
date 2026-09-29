@@ -1,20 +1,24 @@
-import { Reveal } from "../ui/Reveal";
+"use client";
 
-const faqs = [
-  ["Where does the race data come from?", "A scraper network pulls from the Turkish athletics federation, RunPo, PassTiming and PlusTimer, plus international sources like Finishers, World Athletics label races and the ITRA trail calendar. Duplicates are merged and expired races are cleaned up automatically."],
-  ["Is Veira only for Turkey?", "No. It started Turkey-first, but race data is country-tagged, so you see your own country first and can switch on “also show races abroad”."],
-  ["How does the weekly league work?", "It ranks runners by average pace, per distance (5K, 10K, 21K, 42K), and resets every week so everyone gets a fresh start."],
-  ["How do I list my club or race?", "Apply as an owner in the app. Once an admin approves you, you can list your club and submit races. Submitted races are reviewed before they appear."],
-  ["Which languages are supported?", "Turkish and English, with more coverage being added."],
-  ["Does it sync with my watch?", "Strava connect and sync works today. Garmin and GPX upload are planned."],
-];
+import { Reveal } from "../ui/Reveal";
+import { useI18n } from "../../lib/i18n/context";
 
 export function Faq() {
+  const { t } = useI18n();
+  const faqs = [
+    [t("faq.q1"), t("faq.a1")],
+    [t("faq.q2"), t("faq.a2")],
+    [t("faq.q3"), t("faq.a3")],
+    [t("faq.q4"), t("faq.a4")],
+    [t("faq.q5"), t("faq.a5")],
+    [t("faq.q6"), t("faq.a6")],
+  ];
+
   return (
     <section id="faq" className="px-5 py-28 md:px-8">
       <div className="mx-auto max-w-4xl">
         <Reveal>
-          <h2 className="headline text-center text-[clamp(3rem,7vw,6rem)]">FAQ&apos;s</h2>
+          <h2 className="headline text-center text-[clamp(3rem,7vw,6rem)]">{t("faq.heading")}</h2>
         </Reveal>
         <div className="mt-12 divide-y divide-fg/10 border-y border-fg/10">
           {faqs.map(([q, a]) => (

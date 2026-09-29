@@ -2,22 +2,24 @@
 
 import { useMemo, useState } from "react";
 import type { DistanceBucket, Race, RaceType } from "../../lib/races";
+import { useI18n } from "../../lib/i18n/context";
+import { MONTHS_LONG, MONTHS_SHORT } from "../../lib/i18n/translations";
 
 const BUCKETS: DistanceBucket[] = ["5K", "10K", "21K", "42K", "Ultra"];
 const TYPES: RaceType[] = ["Road", "Trail", "Ultra", "Triathlon", "Cycling", "Walk"];
-const SORTS = [
-  { v: "soonest", label: "Soonest" },
-  { v: "latest", label: "Latest" },
-  { v: "longest", label: "Longest distance" },
-  { v: "shortest", label: "Shortest distance" },
-  { v: "name", label: "Name A–Z" },
-  { v: "added", label: "Newly added" },
-] as const;
-type Sort = (typeof SORTS)[number]["v"];
+const TYPE_KEY: Record<RaceType, string> = {
+  Road: "typeRoad",
+  Trail: "typeTrail",
+  Ultra: "typeUltra",
+  Triathlon: "typeTriathlon",
+  Cycling: "typeCycling",
+  Walk: "typeWalk",
+  Other: "typeOther",
+};
+const SORTS = ["soonest", "latest", "longest", "shortest", "name", "added"] as const;
+type Sort = (typeof SORTS)[number];
 
 const PAGE = 24;
-const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const MONTH_LONG = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const chip = (on: boolean) =>
   `rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
@@ -31,7 +33,7 @@ function fmtKm(km: number) {
   return `${Number.isInteger(km) ? km : km.toFixed(1)}K`;
 }
 
-function RaceCard({ r }: { r: Race }) {
+function RaceCard({ r, lang, t }: { r: Race; lang: "en" | "tr" | "es"; t: (path: string, vars?: Record<string, string | number>) => string }) {
   const [y, m, d] = r.date.split("-").map(Number);
   const [imgOk, setImgOk] = useState(true);
   return (
@@ -50,16 +52,18 @@ function RaceCard({ r }: { r: Race }) {
         )}
         <div className="absolute left-3 top-3 rounded-xl bg-ink/80 px-3 py-1.5 text-center leading-none backdrop-blur">
           <p className="headline text-2xl">{d}</p>
-          <p className="text-[10px] font-bold uppercase text-mint-bright">{MONTH[m - 1]} {y}</p>
+          <p className="text-[10px] font-bold uppercase text-mint-bright">
+            {MONTHS_SHORT[lang][m - 1]} {y}
+          </p>
         </div>
         <span className="absolute right-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-fg/80 backdrop-blur">
-          {r.type}
+          {t(`raceExplorer.${TYPE_KEY[r.type]}`)}
         </span>
       </div>
       <div className="flex flex-1 flex-col p-4">
         <h3 className="font-display text-2xl font-bold uppercase leading-tight">{r.name}</h3>
         <p className="mt-1 text-sm text-fg/55">
-          {r.location || "Location TBA"}
+          {r.location || t("raceExplorer.locationTba")}
           {r.location && !r.location.toLowerCase().includes(r.country.toLowerCase()) ? ` · ${r.country}` : ""}
         </p>
         <div className="mt-3 flex flex-wrap gap-1.5">
@@ -70,7 +74,7 @@ function RaceCard({ r }: { r: Race }) {
               </span>
             ))
           ) : (
-            <span className="text-[11px] font-semibold text-fg/35">Distance TBA</span>
+            <span className="text-[11px] font-semibold text-fg/35">{t("raceExplorer.distanceTba")}</span>
           )}
           {r.distances.length > 6 && <span className="text-[11px] text-fg/40">+{r.distances.length - 6}</span>}
         </div>
@@ -82,10 +86,10 @@ function RaceCard({ r }: { r: Race }) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-mint-bright hover:underline"
             >
-              Registration & details <span aria-hidden>↗</span>
+              {t("raceExplorer.registrationDetails")} <span aria-hidden>↗</span>
             </a>
           ) : (
-            <span className="text-xs font-semibold text-fg/30">No registration link yet</span>
+            <span className="text-xs font-semibold text-fg/30">{t("raceExplorer.noRegistrationLink")}</span>
           )}
         </div>
       </div>
@@ -94,6 +98,8 @@ function RaceCard({ r }: { r: Race }) {
 }
 
 export function RaceExplorer({ races }: { races: Race[] }) {
+  const { t, lang } = useI18n();
+  const locale = lang === "tr" ? "tr" : lang === "es" ? "es" : "en";
   const [q, setQ] = useState("");
   const [country, setCountry] = useState("all");
   const [buckets, setBuckets] = useState<Set<DistanceBucket>>(new Set());
@@ -116,14 +122,14 @@ export function RaceExplorer({ races }: { races: Race[] }) {
   );
 
   const list = useMemo(() => {
-    const needle = q.trim().toLocaleLowerCase("tr");
+    const needle = q.trim().toLocaleLowerCase(locale);
     const out = races.filter((r) => {
       if (country !== "all" && r.country !== country) return false;
       if (month !== "all" && !r.date.startsWith(month)) return false;
       if (buckets.size && !r.buckets.some((b) => buckets.has(b))) return false;
       if (types.size && !types.has(r.type)) return false;
       if (needle) {
-        const hay = `${r.name} ${r.nameLocal} ${r.location} ${r.country}`.toLocaleLowerCase("tr");
+        const hay = `${r.name} ${r.nameLocal} ${r.location} ${r.country}`.toLocaleLowerCase(locale);
         if (!hay.includes(needle)) return false;
       }
       return true;
@@ -141,7 +147,7 @@ export function RaceExplorer({ races }: { races: Race[] }) {
       }
     });
     return out;
-  }, [races, q, country, month, buckets, types, sort]);
+  }, [races, q, country, month, buckets, types, sort, locale]);
 
   const toggle = <T,>(set: Set<T>, v: T, setter: (s: Set<T>) => void) => {
     const n = new Set(set);
@@ -163,25 +169,25 @@ export function RaceExplorer({ races }: { races: Race[] }) {
             <input
               value={q}
               onChange={(e) => { setQ(e.target.value); setShown(PAGE); }}
-              placeholder="Search race, city or country…"
-              aria-label="Search races"
+              placeholder={t("raceExplorer.searchPlaceholder")}
+              aria-label={t("raceExplorer.searchLabel")}
               className={`${field} min-w-[14rem] flex-1 placeholder:text-fg/35`}
             />
-            <select value={country} onChange={(e) => { setCountry(e.target.value); setShown(PAGE); }} aria-label="Country" className={field}>
-              <option value="all">All countries</option>
+            <select value={country} onChange={(e) => { setCountry(e.target.value); setShown(PAGE); }} aria-label={t("raceExplorer.countryLabel")} className={field}>
+              <option value="all">{t("raceExplorer.allCountries")}</option>
               {countries.map(([c, n]) => (
                 <option key={c} value={c}>{c} ({n})</option>
               ))}
             </select>
-            <select value={month} onChange={(e) => { setMonth(e.target.value); setShown(PAGE); }} aria-label="Month" className={field}>
-              <option value="all">Any month</option>
+            <select value={month} onChange={(e) => { setMonth(e.target.value); setShown(PAGE); }} aria-label={t("raceExplorer.monthLabel")} className={field}>
+              <option value="all">{t("raceExplorer.anyMonth")}</option>
               {months.map((m) => (
-                <option key={m} value={m}>{MONTH_LONG[+m.slice(5) - 1]} {m.slice(0, 4)}</option>
+                <option key={m} value={m}>{MONTHS_LONG[lang][+m.slice(5) - 1]} {m.slice(0, 4)}</option>
               ))}
             </select>
-            <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} aria-label="Sort by" className={field}>
+            <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} aria-label={t("raceExplorer.sortLabel")} className={field}>
               {SORTS.map((s) => (
-                <option key={s.v} value={s.v}>Sort: {s.label}</option>
+                <option key={s} value={s}>{t(`raceExplorer.sort${s[0].toUpperCase()}${s.slice(1)}`)}</option>
               ))}
             </select>
           </div>
@@ -192,14 +198,14 @@ export function RaceExplorer({ races }: { races: Race[] }) {
               </button>
             ))}
             <span className="mx-1 h-5 w-px bg-fg/15" />
-            {TYPES.map((t) => (
-              <button key={t} onClick={() => toggle(types, t, setTypes)} aria-pressed={types.has(t)} className={chip(types.has(t))}>
-                {t}
+            {TYPES.map((ty) => (
+              <button key={ty} onClick={() => toggle(types, ty, setTypes)} aria-pressed={types.has(ty)} className={chip(types.has(ty))}>
+                {t(`raceExplorer.${TYPE_KEY[ty]}`)}
               </button>
             ))}
             {active ? (
               <button onClick={reset} className="ml-auto text-xs font-bold text-mint-bright hover:underline">
-                Clear filters
+                {t("raceExplorer.clearFilters")}
               </button>
             ) : null}
           </div>
@@ -208,24 +214,24 @@ export function RaceExplorer({ races }: { races: Race[] }) {
 
       <div className="mx-auto max-w-7xl pt-8">
         <p className="mb-6 text-sm font-semibold text-fg/50" aria-live="polite">
-          {list.length.toLocaleString("en-US")} race{list.length === 1 ? "" : "s"}
+          {t(list.length === 1 ? "raceExplorer.countOne" : "raceExplorer.countOther", { n: list.length.toLocaleString(locale === "tr" ? "tr-TR" : locale === "es" ? "es-ES" : "en-US") })}
         </p>
         {list.length === 0 ? (
           <div className="rounded-2xl border border-fg/10 py-24 text-center">
-            <p className="headline text-4xl">No races match</p>
-            <button onClick={reset} className="btn-mint mt-6">Clear filters</button>
+            <p className="headline text-4xl">{t("raceExplorer.noMatch")}</p>
+            <button onClick={reset} className="btn-mint mt-6">{t("raceExplorer.clearFilters")}</button>
           </div>
         ) : (
           <>
             <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {list.slice(0, shown).map((r) => (
-                <RaceCard key={r.id} r={r} />
+                <RaceCard key={r.id} r={r} lang={lang} t={t} />
               ))}
             </ul>
             {shown < list.length && (
               <div className="mt-12 text-center">
                 <button onClick={() => setShown((s) => s + PAGE)} className="btn-mint">
-                  Show more ({list.length - shown} left)
+                  {t("raceExplorer.showMore", { n: list.length - shown })}
                 </button>
               </div>
             )}

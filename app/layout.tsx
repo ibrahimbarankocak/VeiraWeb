@@ -3,6 +3,7 @@ import { Barlow_Condensed, Manrope } from "next/font/google";
 import { type ReactNode } from "react";
 import { ScrollProgress } from "../components/ui/ScrollProgress";
 import { SmoothScroll } from "../components/scenes/SmoothScroll";
+import { LanguageProvider } from "../lib/i18n/context";
 import "./globals.css";
 
 const display = Barlow_Condensed({
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
   other: { "darkreader-lock": "" },
   title: "Veira — The running companion",
   description:
-    "Discover races, track your shoes, and climb the weekly league. Veira is the running companion for runners from 5K to ultra.",
+    "Race calendar, shoe tracking and a weekly league in one app, for runners from 5K to ultra — in Turkey and beyond.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -42,9 +43,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body suppressHydrationWarning>
-        <SmoothScroll />
-        <ScrollProgress />
-        {children}
+        <LanguageProvider>
+          <SmoothScroll />
+          <ScrollProgress />
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -1,4 +1,7 @@
+"use client";
+
 import { PhoneFrame } from "../ui/PhoneFrame";
+import { useI18n } from "../../lib/i18n/context";
 
 const card = "rounded-2xl border border-white/10 bg-white/[0.04]";
 
@@ -133,6 +136,56 @@ export function ClubsScreen() {
         <p className="pt-1 text-center text-[9px] font-semibold uppercase tracking-widest text-mint-bright">
           ✓ Admin-verified clubs
         </p>
+      </div>
+    </PhoneFrame>
+  );
+}
+
+// Importance colours match the mobile app's race-plan feature: a = goal, b = important, c = training.
+const IMPORTANCE = [
+  { key: "mockGoal", dot: "#E5484D" },
+  { key: "mockImportant", dot: "#F5A524" },
+  { key: "mockTraining", dot: "#4C9EEB" },
+] as const;
+
+export function PlanScreen() {
+  const { t } = useI18n();
+  const races = [
+    { name: "Bosphorus Cross-Continental", date: "21 Sep", level: 0 },
+    { name: "Cappadocia Ultra-Trail", date: "5 Oct", level: 2 },
+    { name: "Izmir Half Marathon", date: "19 Oct", level: 1 },
+  ];
+  return (
+    <PhoneFrame active="Inventory" tint="rgba(40,104,72,0.4)">
+      <p className="headline text-4xl normal-case">{t("nav.plan")}</p>
+      <div className={`${card} mt-3 p-3`}>
+        <p className="text-[9px] font-bold uppercase tracking-widest text-mint-bright">{t("plan.mockNextGoal")}</p>
+        <p className="mt-1 text-sm font-bold">{races[0].name}</p>
+        <p className="headline mt-1 text-3xl text-mint-light">{t("plan.mockDaysToGo", { n: 12 })}</p>
+      </div>
+      <div className="mt-3 space-y-1.5">
+        {races.map((r) => (
+          <div key={r.name} className={`${card} flex items-center gap-2.5 px-3 py-2`}>
+            <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: IMPORTANCE[r.level].dot }} />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-xs font-bold">{r.name}</p>
+              <p className="text-[10px] text-white/45">{r.date}</p>
+            </div>
+            <span className="text-[9px] font-bold uppercase tracking-wide text-white/50">{t(`plan.${IMPORTANCE[r.level].key}`)}</span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 grid grid-cols-3 gap-1.5 text-center">
+        {[
+          [t("plan.mockStatRaces"), "3"],
+          [t("plan.mockStatDistance"), "78K"],
+          [t("plan.mockStatCalories"), "5.4K"],
+        ].map(([label, value]) => (
+          <div key={label} className={`${card} p-2.5`}>
+            <p className="headline text-2xl text-mint-light">{value}</p>
+            <p className="text-[8px] font-semibold uppercase tracking-widest text-white/45">{label}</p>
+          </div>
+        ))}
       </div>
     </PhoneFrame>
   );

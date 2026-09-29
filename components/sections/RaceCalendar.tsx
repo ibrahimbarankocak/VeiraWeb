@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Reveal } from "../ui/Reveal";
 import { PhoneFrame } from "../ui/PhoneFrame";
+import { useI18n } from "../../lib/i18n/context";
 
 type Race = {
   name: string;
@@ -31,6 +32,7 @@ const week = [
 const filters = ["All", "5K", "10K", "21K", "42K"];
 
 export function RaceCalendar() {
+  const { t } = useI18n();
   const [selected, setSelected] = useState(21);
   const [filter, setFilter] = useState("All");
   const [abroad, setAbroad] = useState(false);
@@ -57,26 +59,24 @@ export function RaceCalendar() {
       <div className="blob left-0 top-1/3 h-[32rem] w-[32rem] bg-mint/40" />
       <div className="mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-[1fr_auto]">
         <Reveal>
-          <p className="eyebrow mb-4">Race calendar</p>
+          <p className="eyebrow mb-4">{t("raceCalendarTeaser.eyebrow")}</p>
           <h2 className="headline text-[clamp(3.2rem,8vw,7.5rem)]">
-            Every start line,
+            {t("raceCalendarTeaser.headline1")}
             <br />
-            <span className="grad-text">one calendar</span>
+            <span className="grad-text">{t("raceCalendarTeaser.headlineGrad")}</span>
           </h2>
-          <p className="mt-6 max-w-lg text-lg text-fg/60">
-            Curated and full upcoming-race lists, fed by official federations and race platforms in Turkey and
-            abroad. Filter by distance, sort by soonest, closest or popular, and pin the ones you&apos;re chasing.
-            Try it — this is the real layout.
-          </p>
+          <p className="mt-6 max-w-lg text-lg text-fg/60">{t("raceCalendarTeaser.body")}</p>
           <ul className="mt-8 grid max-w-lg grid-cols-2 gap-3 text-sm font-semibold text-fg/80">
-            {["Country-first filtering", "Also show races abroad", "GPS “closest” sort", "Registration links"].map((t) => (
-              <li key={t} className="rounded-xl border border-fg/10 bg-fg/[0.03] px-4 py-3">
-                {t}
-              </li>
-            ))}
+            {[t("raceCalendarTeaser.point1"), t("raceCalendarTeaser.point2"), t("raceCalendarTeaser.point3"), t("raceCalendarTeaser.point4")].map(
+              (pt) => (
+                <li key={pt} className="rounded-xl border border-fg/10 bg-fg/[0.03] px-4 py-3">
+                  {pt}
+                </li>
+              )
+            )}
           </ul>
           <Link href="/races" className="btn-mint mt-8">
-            Browse all races
+            {t("raceCalendarTeaser.cta")}
           </Link>
         </Reveal>
 

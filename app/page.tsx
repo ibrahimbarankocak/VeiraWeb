@@ -2,6 +2,7 @@ import { Navbar } from "../components/sections/Navbar";
 import { Problem } from "../components/sections/Problem";
 import { Marquee } from "../components/sections/Marquee";
 import { RaceCalendar } from "../components/sections/RaceCalendar";
+import { PlanTeaser } from "../components/sections/PlanTeaser";
 import { Pricing } from "../components/sections/Pricing";
 import { Faq } from "../components/sections/Faq";
 import { FinalCta, Footer } from "../components/sections/Footer";
@@ -73,6 +74,7 @@ export default async function HomePage() {
         <Marquee reverse />
         <RaceCalendar />
         {races.length > 0 && <RaceCollage races={pickCollage(races)} total={races.length} />}
+        <PlanTeaser />
         <Pricing />
         <Faq />
         <FinalCta />

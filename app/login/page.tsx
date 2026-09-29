@@ -6,26 +6,27 @@ import Link from "next/link";
 import { Logo } from "../../components/ui/Brand";
 import { getSupabase } from "../../lib/supabase";
 import { useUser } from "../../lib/useUser";
-
-function friendlyError(message: string): string {
-  const m = message.toLowerCase();
-  if (m.includes("error sending"))
-    return "We could not send the confirmation email right now. Please try again in a few minutes, or contact support.";
-  if (m.includes("rate limit")) return "Too many attempts. Please wait a few minutes and try again.";
-  if (m.includes("invalid login credentials")) return "Wrong email or password.";
-  if (m.includes("email not confirmed")) return "Please confirm your email first — check your inbox.";
-  if (m.includes("already registered")) return "This email already has an account. Try logging in.";
-  return message;
-}
+import { useI18n } from "../../lib/i18n/context";
 
 const input =
   "h-14 w-full rounded-md border border-mint/25 bg-white px-4 text-base text-onmint outline-none transition focus:border-mint focus:ring-2 focus:ring-mint/20";
 const label = "mb-2 block px-1 text-sm font-semibold text-mint";
 
 function AuthForm() {
+  const { t } = useI18n();
   const params = useSearchParams();
   const router = useRouter();
   const { user } = useUser();
+
+  function friendlyError(message: string): string {
+    const m = message.toLowerCase();
+    if (m.includes("error sending")) return t("login.errorSending");
+    if (m.includes("rate limit")) return t("login.rateLimit");
+    if (m.includes("invalid login credentials")) return t("login.invalidCredentials");
+    if (m.includes("email not confirmed")) return t("login.emailNotConfirmed");
+    if (m.includes("already registered")) return t("login.alreadyRegistered");
+    return message;
+  }
 
   // Already signed in (or just returned from Google) → main page.
   useEffect(() => {
@@ -59,7 +60,7 @@ function AuthForm() {
         }
         // Supabase returns a user with no identities when the email is already registered.
         if (data.user && data.user.identities?.length === 0) throw new Error("already registered");
-        setMsg({ ok: true, text: "Almost there! Check your inbox and confirm your email to finish signing up." });
+        setMsg({ ok: true, text: t("login.almostThere") });
       } else {
         const { error } = await sb.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -75,9 +76,9 @@ function AuthForm() {
 
   async function forgot(form: HTMLFormElement | null) {
     const email = form ? String(new FormData(form).get("email") || "") : "";
-    if (!email) return setMsg({ ok: false, text: "Enter your email first." });
+    if (!email) return setMsg({ ok: false, text: t("login.enterEmailFirst") });
     const { error } = await getSupabase().auth.resetPasswordForEmail(email);
-    setMsg(error ? { ok: false, text: friendlyError(error.message) } : { ok: true, text: "Password reset email sent." });
+    setMsg(error ? { ok: false, text: friendlyError(error.message) } : { ok: true, text: t("login.passwordResetSent") });
   }
 
   async function google() {
@@ -91,10 +92,10 @@ function AuthForm() {
   return (
     <div className="mx-auto w-full max-w-3xl text-center">
       <p className="font-display text-xl font-bold uppercase tracking-wide text-mint">
-        {signup ? "Ready to join the league?" : "Welcome back, runner"}
+        {signup ? t("login.readyToJoin") : t("login.welcomeBack")}
       </p>
       <h1 className="headline mt-3 text-[clamp(3.2rem,9vw,7rem)] text-mint">
-        {signup ? "Create your account" : "Log in to veira"}
+        {signup ? t("login.createAccount") : t("login.logInTitle")}
       </h1>
 
       <form
@@ -104,16 +105,16 @@ function AuthForm() {
         <div className="space-y-6">
           {signup && (
             <div>
-              <label className={label} htmlFor="name">First name*</label>
+              <label className={label} htmlFor="name">{t("login.firstName")}</label>
               <input id="name" name="name" required autoComplete="given-name" className={input} />
             </div>
           )}
           <div>
-            <label className={label} htmlFor="email">Email*</label>
+            <label className={label} htmlFor="email">{t("login.email")}</label>
             <input id="email" name="email" type="email" required autoComplete="email" className={input} />
           </div>
           <div>
-            <label className={label} htmlFor="password">Password*</label>
+            <label className={label} htmlFor="password">{t("login.password")}</label>
             <input
               id="password"
               name="password"
@@ -129,7 +130,7 @@ function AuthForm() {
         {signup && (
           <label className="mt-6 flex items-start gap-3 text-sm font-medium text-mint">
             <input type="checkbox" required className="mt-0.5 h-5 w-5 accent-[#286848]" />
-            I agree to the terms and privacy policy.
+            {t("login.agreeTerms")}
           </label>
         )}
 
@@ -144,14 +145,14 @@ function AuthForm() {
             disabled={busy}
             className="rounded-md bg-mint px-9 py-4 font-display text-xl font-bold uppercase tracking-wide text-mint-light transition hover:bg-[#1e5238] disabled:opacity-60"
           >
-            {busy ? "Please wait…" : signup ? "Sign up" : "Log in"}
+            {busy ? t("login.pleaseWait") : signup ? t("login.signUp") : t("login.logIn")}
           </button>
           <button
             type="button"
             onClick={google}
             className="rounded-md border border-mint/40 px-6 py-[0.95rem] text-sm font-bold text-mint transition hover:bg-mint/5"
           >
-            Continue with Google
+            {t("login.continueGoogle")}
           </button>
           {!signup && (
             <button
@@ -159,14 +160,14 @@ function AuthForm() {
               onClick={(e) => forgot(e.currentTarget.closest("form"))}
               className="text-sm font-semibold text-neutral-500 underline-offset-4 hover:underline"
             >
-              Forgot password?
+              {t("login.forgotPassword")}
             </button>
           )}
         </div>
       </form>
 
       <p className="mt-8 text-sm text-neutral-600">
-        {signup ? "Already have an account?" : "New to veira?"}{" "}
+        {signup ? t("login.alreadyHaveAccount") : t("login.newToVeira")}{" "}
         <button
           onClick={() => {
             setMode(signup ? "login" : "signup");
@@ -174,7 +175,7 @@ function AuthForm() {
           }}
           className="font-bold text-mint underline-offset-4 hover:underline"
         >
-          {signup ? "Log in" : "Create an account"}
+          {signup ? t("login.logIn") : t("login.createAnAccount")}
         </button>
       </p>
     </div>
@@ -182,6 +183,7 @@ function AuthForm() {
 }
 
 export default function LoginPage() {
+  const { t } = useI18n();
   return (
     <main
       className="relative min-h-screen bg-white px-5 py-8 text-onmint"
@@ -193,7 +195,7 @@ export default function LoginPage() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between">
         <Logo dark />
-        <Link href="/" className="text-sm font-semibold text-mint hover:underline">← Back to site</Link>
+        <Link href="/" className="text-sm font-semibold text-mint hover:underline">{t("login.backToSite")}</Link>
       </div>
       <div className="flex min-h-[80vh] items-center py-12">
         <Suspense>
