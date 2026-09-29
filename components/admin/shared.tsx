@@ -18,6 +18,15 @@ export function Spinner() {
   return <p className="py-10 text-center text-sm text-fg/40">Yükleniyor…</p>;
 }
 
+/** Supabase/PostgREST errors are plain objects with a `.message`, not `Error` instances. */
+export function errMsg(e: unknown): string {
+  if (e instanceof Error) return e.message;
+  if (e && typeof e === "object" && "message" in e && typeof (e as { message: unknown }).message === "string") {
+    return (e as { message: string }).message;
+  }
+  return String(e);
+}
+
 export function fmtDate(iso: string | null | undefined) {
   if (!iso) return "—";
   return new Date(iso).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric" });

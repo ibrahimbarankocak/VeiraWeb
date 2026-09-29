@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { getSupabase } from "../../lib/supabase";
-import { btnNeutral, btnPrimary, card, field, input, label } from "./shared";
+import { btnNeutral, btnPrimary, card, errMsg, field, input, label } from "./shared";
 
 // Matches the ground values the site already classifies (see TYPES in lib/races.ts).
 const GROUNDS = [
@@ -68,7 +68,7 @@ export function AddRaceForm({ onAdded }: { onAdded: () => void }) {
       setOpen(false);
       onAdded();
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+      setError(errMsg(err));
     } finally {
       setSaving(false);
     }

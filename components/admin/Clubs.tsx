@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { getSupabase } from "../../lib/supabase";
-import { btnNeutral, btnPrimary, btnReject, card, EmptyState, field, input, label, Spinner } from "./shared";
+import { btnNeutral, btnPrimary, btnReject, card, EmptyState, errMsg, field, input, label, Spinner } from "./shared";
 
 type Club = {
   id: string;
@@ -61,7 +61,7 @@ function AddClubForm({ onAdded }: { onAdded: () => void }) {
       setOpen(false);
       onAdded();
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+      setError(errMsg(err));
     } finally {
       setSaving(false);
     }
