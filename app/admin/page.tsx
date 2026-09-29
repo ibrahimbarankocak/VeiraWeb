@@ -9,10 +9,12 @@ import { PendingRaces } from "../../components/admin/PendingRaces";
 import { AllRaces } from "../../components/admin/AllRaces";
 import { OwnerRequests } from "../../components/admin/OwnerRequests";
 import { Feedback } from "../../components/admin/Feedback";
+import { Clubs } from "../../components/admin/Clubs";
 
 const TABS = [
   { key: "pending", label: "Bekleyen yarışlar", render: () => <PendingRaces /> },
   { key: "all", label: "Tüm yarışlar", render: () => <AllRaces /> },
+  { key: "clubs", label: "Kulüpler", render: () => <Clubs /> },
   { key: "owners", label: "Kulüp başvuruları", render: () => <OwnerRequests /> },
   { key: "feedback", label: "Geri bildirim", render: () => <Feedback /> },
 ] as const;

@@ -3,6 +3,12 @@ export const btn = "rounded-full px-4 py-2 text-xs font-bold uppercase tracking-
 export const btnApprove = `${btn} bg-mint-bright/20 text-mint-bright hover:bg-mint-bright/30`;
 export const btnReject = `${btn} bg-red-500/15 text-red-400 hover:bg-red-500/25`;
 export const btnNeutral = `${btn} border border-fg/20 text-fg/70 hover:border-fg/40 hover:text-fg`;
+export const btnPrimary = `${btn} bg-mint-bright text-onbright hover:bg-mint-bright/85`;
+
+export const input =
+  "h-11 w-full rounded-xl border border-fg/10 bg-fg/[0.04] px-3 text-sm outline-none focus:border-mint-bright";
+export const label = "mb-1.5 block text-xs font-semibold text-fg/50";
+export const field = "min-w-0";
 
 export function EmptyState({ text }: { text: string }) {
   return <p className="py-10 text-center text-sm text-fg/40">{text}</p>;

@@ -1,12 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import type { RaceDetail } from "../../lib/races";
 import { MONTHS_LONG } from "../../lib/i18n/translations";
 import { useI18n } from "../../lib/i18n/context";
-import { useUser } from "../../lib/useUser";
-import { isRacePinned, pinRace, unpinRace } from "../../lib/racePlan";
 
 function fmtKm(km: number) {
   return `${Number.isInteger(km) ? km : km.toFixed(1)}K`;
@@ -16,76 +13,9 @@ const daysBetween = (a: string, b: string) => Math.round((new Date(b).getTime() 
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-fg/10 py-3 text-sm last:border-0">
+    <div className="grid grid-cols-[auto_1fr] items-baseline gap-x-4 gap-y-1 border-b border-fg/10 py-3 text-sm last:border-0">
       <dt className="text-fg/50">{label}</dt>
       <dd className="font-semibold">{children}</dd>
-    </div>
-  );
-}
-
-function PinButton({ raceId }: { raceId: string }) {
-  const { t } = useI18n();
-  const { user, loading } = useUser();
-  const [pinned, setPinned] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!user) return;
-    let alive = true;
-    isRacePinned(raceId).then((p) => alive && setPinned(p));
-    return () => {
-      alive = false;
-    };
-  }, [user, raceId]);
-
-  if (loading) return null;
-
-  async function toggle() {
-    if (!user) {
-      setMsg(t("raceDetail.pinLoginHint"));
-      return;
-    }
-    setBusy(true);
-    setMsg(null);
-    try {
-      if (pinned) {
-        await unpinRace(raceId);
-        setPinned(false);
-      } else {
-        await pinRace(raceId);
-        setPinned(true);
-      }
-    } catch {
-      setMsg(t("raceDetail.pinFailed"));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  return (
-    <div>
-      <button
-        onClick={toggle}
-        disabled={busy}
-        className={`inline-flex items-center gap-2 rounded-full border px-6 py-3 font-display text-base font-bold uppercase tracking-wide transition disabled:opacity-60 ${
-          pinned ? "border-mint-bright/50 bg-mint-bright/15 text-mint-bright" : "border-fg/20 text-fg hover:border-mint-bright"
-        }`}
-      >
-        <span aria-hidden>{pinned ? "◉" : "⊕"}</span>
-        {pinned ? t("raceDetail.pinnedCta") : t("raceDetail.pinCta")}
-      </button>
-      {msg && (
-        <p className="mt-2 text-xs font-semibold text-fg/50">
-          {!user ? (
-            <Link href="/login" className="text-mint-bright hover:underline">
-              {msg}
-            </Link>
-          ) : (
-            msg
-          )}
-        </p>
-      )}
     </div>
   );
 }
@@ -255,8 +185,6 @@ export function RaceDetailView({ race }: { race: RaceDetail }) {
                   {t("raceDetail.viewMap")}
                 </a>
               )}
-
-              <PinButton raceId={race.id} />
             </div>
           </div>
         </div>

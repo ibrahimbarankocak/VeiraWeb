@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Navbar } from "../../components/sections/Navbar";
@@ -136,9 +135,6 @@ export default function ProfilePage() {
               </div>
 
               <div className="mt-8 flex flex-wrap gap-4">
-                <Link href="/races" className="btn-mint">
-                  {t("profile.browseRaces")}
-                </Link>
                 <button
                   onClick={signOut}
                   disabled={signingOut}

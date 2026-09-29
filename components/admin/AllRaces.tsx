@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getSupabase } from "../../lib/supabase";
 import { btnNeutral, btnReject, card, EmptyState, Spinner } from "./shared";
+import { AddRaceForm } from "./AddRaceForm";
 
 type Row = {
   id: string;
@@ -63,6 +64,9 @@ export function AllRaces() {
 
   return (
     <div>
+      <div className="mb-4">
+        <AddRaceForm onAdded={() => setRefresh((r) => r + 1)} />
+      </div>
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
