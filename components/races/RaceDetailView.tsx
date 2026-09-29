@@ -175,7 +175,8 @@ export function RaceDetailView({ race }: { race: RaceDetail }) {
 
               <dl className="mt-6 divide-y divide-fg/10">
                 <Row label={t("raceDetail.location")}>
-                  {race.location || t("raceExplorer.locationTba")}, {race.country}
+                  {race.location || t("raceExplorer.locationTba")}
+                  {race.location && !race.location.toLowerCase().includes(race.country.toLowerCase()) ? `, ${race.country}` : ""}
                 </Row>
                 {race.elevationM != null && <Row label={t("raceDetail.elevation")}>{race.elevationM.toLocaleString()} m</Row>}
                 {race.difficulty && <Row label={t("raceDetail.difficulty")}>{race.difficulty}</Row>}
