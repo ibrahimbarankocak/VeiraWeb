@@ -10,7 +10,7 @@ export function Bolt({ className = "h-4 w-4" }: { className?: string }) {
 
 export function Logo({ dark = false }: { dark?: boolean }) {
   return (
-    <Link href="/" className="flex items-center gap-2.5" aria-label="Veira home">
+    <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Veira home">
       <span
         className={`grid h-9 w-9 place-items-center rounded-xl ${
           dark ? "bg-mint text-mint-light" : "bg-mint/40 text-mint-bright ring-1 ring-mint-bright/30"

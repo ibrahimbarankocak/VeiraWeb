@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Navbar } from "../../components/sections/Navbar";
 import { Footer } from "../../components/sections/Footer";
@@ -16,6 +16,213 @@ type Profile = {
   shoe_count: number | null;
   created_at: string | null;
 };
+
+/** Turns a display name into a valid starting point for a username (letters/numbers/underscore only). */
+function slugifyUsername(name: string): string {
+  const base = name
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9_]/g, "");
+  return (base || "runner").slice(0, 15);
+}
+
+function errText(e: unknown): string {
+  if (e instanceof Error) return e.message;
+  if (e && typeof e === "object" && "message" in e && typeof (e as { message: unknown }).message === "string") {
+    return (e as { message: string }).message;
+  }
+  return String(e);
+}
+
+const fieldLabel = "mb-1.5 block text-xs font-semibold uppercase tracking-wide text-fg/45";
+const fieldInput =
+  "h-11 w-full rounded-xl border border-fg/10 bg-fg/[0.04] px-3.5 text-sm outline-none transition focus:border-mint-bright";
+
+function EditProfileCard({
+  user,
+  profile,
+  onSaved,
+}: {
+  user: NonNullable<ReturnType<typeof useUser>["user"]>;
+  profile: Profile | null;
+  onSaved: (p: Partial<Profile>) => void;
+}) {
+  const { t } = useI18n();
+  const [username, setUsername] = useState(profile?.username ?? "");
+  const [name, setName] = useState(displayName(user));
+  const [savingUsername, setSavingUsername] = useState(false);
+  const [savingName, setSavingName] = useState(false);
+  const [usernameMsg, setUsernameMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [nameMsg, setNameMsg] = useState<{ ok: boolean; text: string } | null>(null);
+
+  useEffect(() => {
+    setUsername(profile?.username ?? "");
+  }, [profile?.username]);
+
+  async function saveUsername(e: FormEvent) {
+    e.preventDefault();
+    const value = username.trim().replace(/^@/, "");
+    if (value.length < 3 || value.length > 20 || !/^[a-zA-Z0-9_]+$/.test(value)) {
+      setUsernameMsg({ ok: false, text: t("profile.usernameInvalid") });
+      return;
+    }
+    setSavingUsername(true);
+    setUsernameMsg(null);
+    try {
+      const { error } = await getSupabase().from("profiles").update({ username: value }).eq("id", user.id);
+      if (error) throw error;
+      onSaved({ username: value });
+      setUsernameMsg({ ok: true, text: t("profile.usernameSaved") });
+    } catch (err) {
+      const msg = errText(err);
+      setUsernameMsg({ ok: false, text: /duplicate|unique/i.test(msg) ? t("profile.usernameTaken") : msg });
+    } finally {
+      setSavingUsername(false);
+    }
+  }
+
+  async function saveName(e: FormEvent) {
+    e.preventDefault();
+    const value = name.trim();
+    if (!value) {
+      setNameMsg({ ok: false, text: t("profile.nameRequired") });
+      return;
+    }
+    setSavingName(true);
+    setNameMsg(null);
+    try {
+      const { error } = await getSupabase().auth.updateUser({ data: { full_name: value } });
+      if (error) throw error;
+      setNameMsg({ ok: true, text: t("profile.nameSaved") });
+    } catch (err) {
+      setNameMsg({ ok: false, text: errText(err) });
+    } finally {
+      setSavingName(false);
+    }
+  }
+
+  return (
+    <div className="mt-6 rounded-2xl border border-fg/10 bg-panel/70 p-6">
+      <h2 className="headline text-2xl">{t("profile.editProfile")}</h2>
+      <div className="mt-4 grid gap-5 sm:grid-cols-2">
+        <form onSubmit={saveName} className="space-y-2">
+          <label className={fieldLabel} htmlFor="displayName">{t("profile.nameLabel")}</label>
+          <input
+            id="displayName"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={fieldInput}
+          />
+          {nameMsg && <p className={`text-xs ${nameMsg.ok ? "text-mint-bright" : "text-red-400"}`}>{nameMsg.text}</p>}
+          <button
+            type="submit"
+            disabled={savingName}
+            className="rounded-full bg-fg/[0.06] px-4 py-2 text-xs font-bold uppercase tracking-wide text-fg/80 transition hover:bg-fg/10 disabled:opacity-50"
+          >
+            {savingName ? t("profile.saving") : t("profile.save")}
+          </button>
+        </form>
+
+        <form onSubmit={saveUsername} className="space-y-2">
+          <label className={fieldLabel} htmlFor="username">{t("profile.usernameLabel")}</label>
+          <div className="relative">
+            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-fg/40">@</span>
+            <input
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className={`${fieldInput} pl-7`}
+              maxLength={20}
+            />
+          </div>
+          <p className="text-xs text-fg/40">{t("profile.usernameHint")}</p>
+          {usernameMsg && (
+            <p className={`text-xs ${usernameMsg.ok ? "text-mint-bright" : "text-red-400"}`}>{usernameMsg.text}</p>
+          )}
+          <button
+            type="submit"
+            disabled={savingUsername}
+            className="rounded-full bg-fg/[0.06] px-4 py-2 text-xs font-bold uppercase tracking-wide text-fg/80 transition hover:bg-fg/10 disabled:opacity-50"
+          >
+            {savingUsername ? t("profile.saving") : t("profile.save")}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function PasswordCard({ canChange }: { canChange: boolean }) {
+  const { t } = useI18n();
+  const [pw, setPw] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    if (pw.length < 6) return setMsg({ ok: false, text: t("profile.passwordTooShort") });
+    if (pw !== confirm) return setMsg({ ok: false, text: t("profile.passwordMismatch") });
+    setBusy(true);
+    setMsg(null);
+    try {
+      const { error } = await getSupabase().auth.updateUser({ password: pw });
+      if (error) throw error;
+      setMsg({ ok: true, text: t("profile.passwordUpdated") });
+      setPw("");
+      setConfirm("");
+    } catch (err) {
+      setMsg({ ok: false, text: errText(err) });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="mt-6 rounded-2xl border border-fg/10 bg-panel/70 p-6">
+      <h2 className="headline text-2xl">{t("profile.passwordSection")}</h2>
+      {!canChange ? (
+        <p className="mt-3 text-sm text-fg/50">{t("profile.googlePasswordNote")}</p>
+      ) : (
+        <form onSubmit={submit} className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <label className={fieldLabel} htmlFor="newPw">{t("profile.newPassword")}</label>
+            <input
+              id="newPw"
+              type="password"
+              minLength={6}
+              value={pw}
+              onChange={(e) => setPw(e.target.value)}
+              className={fieldInput}
+            />
+          </div>
+          <div className="space-y-2">
+            <label className={fieldLabel} htmlFor="confirmPw">{t("profile.confirmPassword")}</label>
+            <input
+              id="confirmPw"
+              type="password"
+              minLength={6}
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              className={fieldInput}
+            />
+          </div>
+          <div className="sm:col-span-2">
+            {msg && <p className={`mb-2 text-xs ${msg.ok ? "text-mint-bright" : "text-red-400"}`}>{msg.text}</p>}
+            <button
+              type="submit"
+              disabled={busy}
+              className="rounded-full bg-fg/[0.06] px-4 py-2 text-xs font-bold uppercase tracking-wide text-fg/80 transition hover:bg-fg/10 disabled:opacity-50"
+            >
+              {busy ? t("profile.saving") : t("profile.updatePassword")}
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+}
 
 export default function ProfilePage() {
   const { t, lang } = useI18n();
@@ -55,6 +262,28 @@ export default function ProfilePage() {
       alive = false;
     };
   }, [user]);
+
+  // Google (and any other) sign-ups never get a username from the auth provider — give everyone
+  // a placeholder handle on first visit so "@username" isn't blank, and it's editable below.
+  useEffect(() => {
+    if (!user || !profileLoaded || profile?.username) return;
+    let alive = true;
+    const base = slugifyUsername(displayName(user));
+    (async () => {
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const candidate = attempt === 0 ? base : `${base}${Math.floor(1000 + Math.random() * 9000)}`;
+        const { error } = await getSupabase().from("profiles").update({ username: candidate }).eq("id", user.id);
+        if (!error) {
+          if (alive) setProfile((p) => (p ? { ...p, username: candidate } : p));
+          return;
+        }
+        if (!/duplicate|unique/i.test(error.message)) return;
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [user, profileLoaded, profile?.username]);
 
   async function signOut() {
     setSigningOut(true);
@@ -133,6 +362,9 @@ export default function ProfilePage() {
                   ))}
                 </dl>
               </div>
+
+              <EditProfileCard user={user} profile={profile} onSaved={(p) => setProfile((cur) => (cur ? { ...cur, ...p } : cur))} />
+              <PasswordCard canChange={provider !== "google"} />
 
               <div className="mt-8 flex flex-wrap gap-4">
                 <button

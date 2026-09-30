@@ -63,7 +63,13 @@ export function Footer() {
         >
           veira
         </p>
-      <p className="pb-6 text-center text-xs text-fg/30">{t("footer.copyright", { year: new Date().getFullYear() })}</p>
+      <div className="flex flex-col items-center justify-center gap-2 pb-6 text-xs text-fg/30 sm:flex-row sm:gap-4">
+        <p>{t("footer.copyright", { year: new Date().getFullYear() })}</p>
+        <span className="flex items-center gap-4">
+          <Link href="/privacy" className="hover:text-fg/60">{t("footer.linkPrivacy")}</Link>
+          <Link href="/terms" className="hover:text-fg/60">{t("footer.linkTerms")}</Link>
+        </span>
+      </div>
     </footer>
   );
 }

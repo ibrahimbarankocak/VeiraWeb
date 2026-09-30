@@ -19,11 +19,27 @@ const sans = Manrope({
   display: "swap",
 });
 
+const description =
+  "Yarış takvimi, ayakkabı takibi ve haftalık lig tek uygulamada — 5K'dan ultraya, Türkiye ve ötesindeki koşucular için.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.appveira.com"),
   other: { "darkreader-lock": "" },
-  title: "Veira — Koşu arkadaşın",
-  description:
-    "Yarış takvimi, ayakkabı takibi ve haftalık lig tek uygulamada — 5K'dan ultraya, Türkiye ve ötesindeki koşucular için.",
+  title: { default: "Veira — Koşu arkadaşın", template: "%s" },
+  description,
+  openGraph: {
+    title: "Veira — Koşu arkadaşın",
+    description,
+    url: "https://www.appveira.com",
+    siteName: "Veira",
+    locale: "tr_TR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Veira — Koşu arkadaşın",
+    description,
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

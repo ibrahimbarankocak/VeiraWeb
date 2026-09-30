@@ -130,7 +130,17 @@ function AuthForm() {
         {signup && (
           <label className="mt-6 flex items-start gap-3 text-sm font-medium text-mint">
             <input type="checkbox" required className="mt-0.5 h-5 w-5 accent-[#286848]" />
-            {t("login.agreeTerms")}
+            <span>
+              {t("login.agreePrefix")}{" "}
+              <Link href="/terms" target="_blank" className="underline underline-offset-2 hover:text-[#1e5238]">
+                {t("login.termsLink")}
+              </Link>{" "}
+              {t("login.agreeMiddle")}{" "}
+              <Link href="/privacy" target="_blank" className="underline underline-offset-2 hover:text-[#1e5238]">
+                {t("login.privacyLink")}
+              </Link>
+              {t("login.agreeSuffix")}
+            </span>
           </label>
         )}
 
