@@ -6,6 +6,9 @@ import { useEffect, useRef } from "react";
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { range, smooth, useMap } from "./hooks";
 import { useI18n } from "../../lib/i18n/context";
+import { ContainerTextFlip } from "../ui/container-text-flip";
+
+const DISTANCES = ["5K", "10K", "21K", "42K", "ULTRA"];
 
 // Hundreds of decorative SVG nodes (city, stars, runners) — load client-side only, after the
 // critical page content, instead of bloating the server-rendered HTML with markup that's purely
@@ -71,6 +74,10 @@ function Headline() {
           {t("hero.ctaSecondary")}
         </Link>
       </div>
+      <p className="mt-6 flex flex-wrap items-center justify-center gap-2.5 text-sm font-semibold text-fg/50 [@media(max-height:760px)]:hidden">
+        {t("hero.flipLead")}
+        <ContainerTextFlip words={DISTANCES} className="py-1 text-sm" textClassName="font-display font-bold uppercase tracking-wide" />
+      </p>
     </>
   );
 }

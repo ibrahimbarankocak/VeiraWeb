@@ -3,24 +3,26 @@
 import Link from "next/link";
 import { Reveal } from "../ui/Reveal";
 import { Logo } from "../ui/Brand";
+import { LampContainer } from "../ui/lamp";
 import { useI18n } from "../../lib/i18n/context";
 
 export function FinalCta() {
   const { t } = useI18n();
   return (
-    <section className="relative overflow-hidden px-5 py-32 text-center md:px-8">
-      <div className="blob left-[calc(50%-20rem)] top-0 h-[30rem] w-[40rem] bg-mint-bright/30" />
-      <Reveal>
-        <h2 className="headline mx-auto max-w-4xl text-[clamp(3.4rem,9vw,8rem)]">
-          {t("finalCta.headline1")}
-          <br />
-          <span className="grad-text">{t("finalCta.headlineGrad")}</span>
-        </h2>
-        <p className="mx-auto mt-6 max-w-lg text-fg/60">{t("finalCta.body")}</p>
-        <Link href="/login?mode=signup" className="btn-mint mt-10">
-          {t("finalCta.cta")}
-        </Link>
-      </Reveal>
+    <section className="relative px-5 text-center md:px-8">
+      <LampContainer>
+        <Reveal>
+          <h2 className="headline mx-auto max-w-4xl text-[clamp(3.4rem,9vw,8rem)]">
+            {t("finalCta.headline1")}
+            <br />
+            <span className="grad-text">{t("finalCta.headlineGrad")}</span>
+          </h2>
+          <p className="mx-auto mt-6 max-w-lg text-fg/60">{t("finalCta.body")}</p>
+          <Link href="/login?mode=signup" className="btn-mint mt-10">
+            {t("finalCta.cta")}
+          </Link>
+        </Reveal>
+      </LampContainer>
     </section>
   );
 }

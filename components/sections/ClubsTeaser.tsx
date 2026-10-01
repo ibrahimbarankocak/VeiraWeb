@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Reveal } from "../ui/Reveal";
 import { ClubsScreen } from "./Screens";
+import { AuroraBars } from "../ui/aurora-bars";
 import { useI18n } from "../../lib/i18n/context";
 
 export function ClubsTeaser() {
@@ -11,7 +12,9 @@ export function ClubsTeaser() {
 
   return (
     <section id="clubs" className="relative overflow-x-clip px-5 py-28 md:px-8 md:py-40">
-      <div className="blob left-0 top-1/4 h-[28rem] w-[28rem] bg-mint/30" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[26rem] opacity-40">
+        <AuroraBars barCount={32} background="transparent" />
+      </div>
       <div className="mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
         <Reveal>
           <p className="eyebrow mb-4">{t("clubs.eyebrow")}</p>

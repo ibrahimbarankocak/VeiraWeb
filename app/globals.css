@@ -120,13 +120,37 @@ body {
     text-shadow: var(--glow);
   }
   .btn-mint {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 font-display text-lg font-bold uppercase tracking-wide text-onmint transition;
+    @apply relative isolate inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-7 py-3.5 font-display text-lg font-bold uppercase tracking-wide text-onmint transition;
     background: linear-gradient(90deg, #3ddc97, #b6ff5c);
     box-shadow: 0 0 40px rgba(61, 220, 151, 0.35);
   }
   .btn-mint:hover {
     transform: translateY(-2px);
     box-shadow: 0 0 60px rgba(61, 220, 151, 0.55);
+  }
+  .btn-mint::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.55) 48%, transparent 76%);
+    background-size: 220% 100%;
+    background-position: 140% 0;
+    animation: btn-shine 4.5s ease-in-out infinite;
+    animation-delay: 1s;
+    pointer-events: none;
+  }
+  @keyframes btn-shine {
+    0%, 55% {
+      background-position: 140% 0;
+    }
+    85%, 100% {
+      background-position: -60% 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-mint::after {
+      animation: none;
+    }
   }
   .eyebrow {
     @apply font-display text-lg font-bold uppercase tracking-[0.18em] text-mint-bright;
