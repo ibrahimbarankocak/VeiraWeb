@@ -8,8 +8,8 @@ const MINT = "61, 220, 151";
 
 export function LampContainer({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("relative z-0 flex min-h-[34rem] w-full flex-col items-center justify-center overflow-hidden rounded-md bg-ink", className)}>
-      <div className="isolate z-0 flex w-full flex-1 scale-y-125 items-center justify-center">
+    <div className={cn("relative z-0 flex min-h-[30rem] w-full flex-col items-center justify-end overflow-hidden rounded-md bg-ink pb-16", className)}>
+      <div className="absolute inset-x-0 top-0 isolate z-0 flex h-[20rem] w-full scale-y-125 items-center justify-center">
         <motion.div
           initial={{ opacity: 0.4, width: "14rem" }}
           whileInView={{ opacity: 1, width: "26rem" }}
@@ -57,7 +57,7 @@ export function LampContainer({ children, className }: { children: React.ReactNo
         <div className="absolute inset-auto z-40 h-44 w-full -translate-y-[12.5rem] bg-ink" />
       </div>
 
-      <div className="relative z-50 flex -translate-y-56 flex-col items-center px-5">{children}</div>
+      <div className="relative z-50 flex flex-col items-center px-5">{children}</div>
     </div>
   );
 }
