@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { range, smooth, useMap } from "./hooks";
 import { useI18n } from "../../lib/i18n/context";
+import { trackSignupClick } from "../../lib/gtag";
 
 // Hundreds of decorative SVG nodes (city, stars, runners) — load client-side only, after the
 // critical page content, instead of bloating the server-rendered HTML with markup that's purely
@@ -61,7 +62,7 @@ function Headline() {
         {t("hero.body")}
       </p>
       <div className="mt-7 flex flex-wrap items-center justify-center gap-4">
-        <Link href="/login?mode=signup" className="btn-mint">
+        <Link href="/login?mode=signup" className="btn-mint" onClick={() => trackSignupClick("hero_primary_cta")}>
           {t("hero.ctaPrimary")}
         </Link>
         <Link

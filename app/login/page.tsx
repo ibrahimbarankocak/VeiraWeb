@@ -7,6 +7,7 @@ import { Logo } from "../../components/ui/Brand";
 import { getSupabase } from "../../lib/supabase";
 import { useUser } from "../../lib/useUser";
 import { useI18n } from "../../lib/i18n/context";
+import { trackSignupClick } from "../../lib/gtag";
 
 const input =
   "h-14 w-full rounded-md border border-mint/25 bg-white px-4 text-base text-onmint outline-none transition focus:border-mint focus:ring-2 focus:ring-mint/20";
@@ -54,12 +55,13 @@ function AuthForm() {
           options: { data: { full_name: String(f.get("name")) }, emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
+        // Supabase returns a user with no identities when the email is already registered.
+        if (data.user && data.user.identities?.length === 0) throw new Error("already registered");
+        trackSignupClick("signup_form_submitted");
         if (data.session) {
           router.replace("/");
           return;
         }
-        // Supabase returns a user with no identities when the email is already registered.
-        if (data.user && data.user.identities?.length === 0) throw new Error("already registered");
         setMsg({ ok: true, text: t("login.almostThere") });
       } else {
         const { error } = await sb.auth.signInWithPassword({ email, password });
@@ -82,6 +84,7 @@ function AuthForm() {
   }
 
   async function google() {
+    if (signup) trackSignupClick("signup_google_button");
     const { error } = await getSupabase().auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: window.location.origin },

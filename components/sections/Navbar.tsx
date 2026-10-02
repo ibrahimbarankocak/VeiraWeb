@@ -8,6 +8,7 @@ import { LanguageSwitcher } from "../ui/LanguageSwitcher";
 import { useI18n } from "../../lib/i18n/context";
 import { displayName, initials, useUser } from "../../lib/useUser";
 import { useIsAdmin } from "../../lib/useAdmin";
+import { trackSignupClick } from "../../lib/gtag";
 
 export function Navbar() {
   const { t } = useI18n();
@@ -113,6 +114,7 @@ export function Navbar() {
               </Link>
               <Link
                 href="/login?mode=signup"
+                onClick={() => trackSignupClick("navbar_get_started")}
                 className="shrink-0 whitespace-nowrap rounded-full bg-gradient-to-r from-[#3ddc97] to-[#b6ff5c] px-3.5 py-2 font-display text-sm font-bold uppercase tracking-wide text-onmint sm:px-5 sm:text-base"
               >
                 {t("nav.getStarted")}

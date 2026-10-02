@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed, Manrope } from "next/font/google";
+import Script from "next/script";
 import { type ReactNode } from "react";
 import { ScrollProgress } from "../components/ui/ScrollProgress";
 import { SmoothScroll } from "../components/scenes/SmoothScroll";
@@ -57,6 +58,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             __html: `try{var t=localStorage.getItem("veira-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}`,
           }}
         />
+        {/* Google tag (gtag.js) — Google Ads AW-18489992499 */}
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=AW-18489992499" strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-18489992499');
+          `}
+        </Script>
       </head>
       <body suppressHydrationWarning>
         <LanguageProvider>

@@ -5,6 +5,7 @@ import { Reveal } from "../ui/Reveal";
 import { Logo } from "../ui/Brand";
 import { LampContainer } from "../ui/lamp";
 import { useI18n } from "../../lib/i18n/context";
+import { trackSignupClick } from "../../lib/gtag";
 
 export function FinalCta() {
   const { t } = useI18n();
@@ -18,7 +19,7 @@ export function FinalCta() {
             <span className="grad-text">{t("finalCta.headlineGrad")}</span>
           </h2>
           <p className="mx-auto mt-6 max-w-lg text-fg/60">{t("finalCta.body")}</p>
-          <Link href="/login?mode=signup" className="btn-mint mt-10">
+          <Link href="/login?mode=signup" className="btn-mint mt-10" onClick={() => trackSignupClick("final_cta")}>
             {t("finalCta.cta")}
           </Link>
         </Reveal>
@@ -52,7 +53,7 @@ export function Footer() {
           <nav className="text-sm text-fg/60" aria-label="Account">
             <p className={colTitle}>{t("footer.accountHeading")}</p>
             <Link href="/login" className={colLink}>{t("footer.linkLogin")}</Link>
-            <Link href="/login?mode=signup" className={colLink}>{t("footer.linkSignup")}</Link>
+            <Link href="/login?mode=signup" className={colLink} onClick={() => trackSignupClick("footer_signup_link")}>{t("footer.linkSignup")}</Link>
             <Link href="/profile" className={colLink}>{t("footer.linkProfile")}</Link>
             <Link href="/#faq" className={colLink}>{t("footer.linkFaq")}</Link>
           </nav>

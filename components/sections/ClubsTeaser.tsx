@@ -5,6 +5,7 @@ import { Reveal } from "../ui/Reveal";
 import { ClubsScreen } from "./Screens";
 import { AuroraBars } from "../ui/aurora-bars";
 import { useI18n } from "../../lib/i18n/context";
+import { trackSignupClick } from "../../lib/gtag";
 
 export function ClubsTeaser() {
   const { t } = useI18n();
@@ -31,7 +32,7 @@ export function ClubsTeaser() {
               </li>
             ))}
           </ul>
-          <Link href="/login?mode=signup" className="btn-mint mt-8">
+          <Link href="/login?mode=signup" className="btn-mint mt-8" onClick={() => trackSignupClick("clubs_teaser_cta")}>
             {t("clubs.cta")}
           </Link>
         </Reveal>

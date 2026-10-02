@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Reveal } from "../ui/Reveal";
 import { PlanScreen } from "./Screens";
 import { useI18n } from "../../lib/i18n/context";
+import { trackSignupClick } from "../../lib/gtag";
 
 export function PlanTeaser() {
   const { t } = useI18n();
@@ -32,7 +33,7 @@ export function PlanTeaser() {
               </li>
             ))}
           </ul>
-          <Link href="/login?mode=signup" className="btn-mint mt-8">
+          <Link href="/login?mode=signup" className="btn-mint mt-8" onClick={() => trackSignupClick("plan_teaser_cta")}>
             {t("plan.cta")}
           </Link>
         </Reveal>

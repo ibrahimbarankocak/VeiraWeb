@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Reveal } from "../ui/Reveal";
 import { useI18n } from "../../lib/i18n/context";
+import { trackSignupClick } from "../../lib/gtag";
 
 // 0 = no, 1 = yes, "planned"/"adminReview" = translation key for a short note
 const rowKeys: [string, (0 | 1 | "planned" | "adminReview")[]][] = [
@@ -20,9 +21,9 @@ export function Pricing() {
   const { t } = useI18n();
 
   const tiers = [
-    { name: t("pricing.tier1Name"), tag: t("pricing.tier1Tag"), cta: t("pricing.tier1Cta"), href: "/login?mode=signup", hot: false },
-    { name: t("pricing.tier2Name"), tag: t("pricing.tier2Tag"), cta: t("pricing.tier2Cta"), href: "/login?mode=signup", hot: true },
-    { name: t("pricing.tier3Name"), tag: t("pricing.tier3Tag"), cta: t("pricing.tier3Cta"), href: "/login?mode=signup", hot: false },
+    { name: t("pricing.tier1Name"), tag: t("pricing.tier1Tag"), cta: t("pricing.tier1Cta"), href: "/login?mode=signup", hot: false, label: "pricing_tier1_cta" },
+    { name: t("pricing.tier2Name"), tag: t("pricing.tier2Tag"), cta: t("pricing.tier2Cta"), href: "/login?mode=signup", hot: true, label: "pricing_tier2_cta" },
+    { name: t("pricing.tier3Name"), tag: t("pricing.tier3Tag"), cta: t("pricing.tier3Cta"), href: "/login?mode=signup", hot: false, label: "pricing_tier3_cta" },
   ];
 
   const cell = (v: 0 | 1 | "planned" | "adminReview") =>
@@ -56,6 +57,7 @@ export function Pricing() {
                       <p className="mt-1 text-xs font-bold uppercase tracking-widest text-mint-bright">{tier.tag}</p>
                       <Link
                         href={tier.href}
+                        onClick={() => trackSignupClick(tier.label)}
                         className={`mt-4 inline-block rounded-full px-5 py-2 font-display text-base font-bold uppercase ${
                           tier.hot ? "bg-gradient-to-r from-[#3ddc97] to-[#b6ff5c] text-onmint" : "border border-fg/20 text-fg hover:border-mint-bright"
                         }`}
