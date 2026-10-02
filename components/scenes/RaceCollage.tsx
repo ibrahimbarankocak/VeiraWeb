@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
-import { range, smooth, useMap } from "./hooks";
+import { range, smooth, useMap, useMinWidth } from "./hooks";
+import { Reveal } from "../ui/Reveal";
 import { useI18n } from "../../lib/i18n/context";
 import { MONTHS_SHORT } from "../../lib/i18n/translations";
 import { IpadFrame } from "../ui/ipad";
@@ -16,25 +17,73 @@ const START: [number, number][] = [[-62, -10], [62, -10], [-66, 4], [66, 4], [-6
 const END: [number, number][] = [[-12, -7], [0, -7], [12, -7], [-12, 7], [0, 7], [12, 7]];
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
+function RaceThumb({ race, lang }: { race: CollageRace; lang: keyof typeof MONTHS_SHORT }) {
+  const [, m, d] = race.date.split("-").map(Number);
+  return (
+    <figure className="relative aspect-[4/5] overflow-hidden rounded-xl border border-white/15 bg-gradient-to-br from-mint via-[#0d3a26] to-ink shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)]">
+      {race.image && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={race.image} alt="" loading="lazy" referrerPolicy="no-referrer" className="absolute inset-0 h-full w-full object-cover" />
+      )}
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/95 via-ink/60 to-transparent p-2 pt-8">
+        <p className="text-[9px] font-bold uppercase tracking-widest text-mint-bright">
+          {d} {MONTHS_SHORT[lang][m - 1]} · {race.country}
+        </p>
+        <p className="line-clamp-2 font-display text-xs font-bold uppercase leading-tight text-white">{race.name}</p>
+      </div>
+    </figure>
+  );
+}
+
+/** Mobile/tablet and reduced-motion: a plain grid, no scroll-jacking or iPad mockup to get wrong at small widths. */
+function RaceCollageStatic({ races, total }: { races: CollageRace[]; total: number }) {
+  const { t, lang } = useI18n();
+  return (
+    <section className="relative px-5 py-24 md:px-8">
+      <Reveal>
+        <div className="text-center">
+          <p className="eyebrow mb-3">{t("collage.eyebrow")}</p>
+          <h2 className="headline text-[clamp(2.2rem,8vw,4.6rem)]">
+            {t("collage.headline", { n: total.toLocaleString(lang === "tr" ? "tr-TR" : lang === "es" ? "es-ES" : "en-US") })}
+            <br />
+            <span className="grad-text">{t("collage.headlineGrad")}</span>
+          </h2>
+        </div>
+        <div className="mx-auto mt-10 grid max-w-md grid-cols-3 gap-3">
+          {races.slice(0, 6).map((r) => (
+            <RaceThumb key={r.id} race={r} lang={lang} />
+          ))}
+        </div>
+        <div className="mt-10 text-center">
+          <Link href="/races" className="btn-mint">
+            {t("collage.cta")}
+          </Link>
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
 export function RaceCollage({ races, total }: { races: CollageRace[]; total: number }) {
   const { t, lang } = useI18n();
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
+  const desktop = useMinWidth(1024);
+  const pin = desktop && !reduce;
   const { scrollYProgress: p } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const real = useTransform(p, (v) => smooth(range(v, 0.05, 0.55)));
   const fixed = useMotionValue(1);
-  const e = reduce ? fixed : real;
+  const e = pin ? real : fixed;
   const zoom = useMap(p, 0.6, 1, 1, 1.06);
   const label = useMap(p, 0.5, 0.68, 0, 1);
   const labelY = useMap(p, 0.5, 0.68, 30, 0);
 
+  if (!pin) return <RaceCollageStatic races={races} total={total} />;
+
   return (
-    <section ref={ref} className={reduce ? "relative min-h-screen" : "relative h-[260vh]"}>
-      <div className={`${reduce ? "" : "sticky top-0"} h-screen overflow-hidden`}>
-        <motion.div
-          style={reduce ? undefined : { opacity: label, y: labelY }}
-          className="absolute inset-x-0 top-[9%] z-30 px-5 text-center"
-        >
+    <section ref={ref} className="relative h-[260vh]">
+      <div className="sticky top-0 h-screen overflow-hidden">
+        <motion.div style={{ opacity: label, y: labelY }} className="absolute inset-x-0 top-[9%] z-30 px-5 text-center">
           <p className="eyebrow mb-3">{t("collage.eyebrow")}</p>
           <h2 className="headline text-[clamp(2.2rem,5vw,4.6rem)]">
             {t("collage.headline", { n: total.toLocaleString(lang === "tr" ? "tr-TR" : lang === "es" ? "es-ES" : "en-US") })}
@@ -43,7 +92,7 @@ export function RaceCollage({ races, total }: { races: CollageRace[]; total: num
           </h2>
         </motion.div>
 
-        <motion.div style={{ scale: reduce ? 1 : zoom }} className="absolute inset-0 grid place-items-center">
+        <motion.div style={{ scale: zoom }} className="absolute inset-0 grid place-items-center">
           <IpadFrame className="w-[78vw] max-w-[760px]" />
           <div className="pointer-events-none absolute inset-0">
             {races.slice(0, 6).map((r, i) => (
@@ -52,10 +101,7 @@ export function RaceCollage({ races, total }: { races: CollageRace[]; total: num
           </div>
         </motion.div>
 
-        <motion.div
-          style={reduce ? undefined : { opacity: label, y: labelY }}
-          className="absolute inset-x-0 bottom-[9%] z-30 text-center"
-        >
+        <motion.div style={{ opacity: label, y: labelY }} className="absolute inset-x-0 bottom-[9%] z-30 text-center">
           <Link href="/races" className="btn-mint">
             {t("collage.cta")}
           </Link>
