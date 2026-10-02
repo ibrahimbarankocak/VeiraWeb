@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
 import { Reveal } from "../ui/Reveal";
 import { PhoneFrame } from "../ui/PhoneFrame";
 import { useI18n } from "../../lib/i18n/context";
@@ -31,88 +30,6 @@ const week = [
 ] as const;
 
 const filters = ["All", "5K", "10K", "21K", "42K"];
-
-function RaceSlideStack({
-  races,
-  pinned,
-  togglePin,
-}: {
-  races: Race[];
-  pinned: Set<string>;
-  togglePin: (name: string) => void;
-}) {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    setIndex(0);
-  }, [races]);
-
-  useEffect(() => {
-    if (races.length < 2) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % races.length), 2800);
-    return () => clearInterval(id);
-  }, [races.length]);
-
-  if (races.length === 0) {
-    return <p className="py-6 text-center text-xs text-white/40">No races match.</p>;
-  }
-
-  const r = races[index % races.length];
-
-  return (
-    <div className="relative mt-1">
-      <div className="relative h-[108px] overflow-hidden">
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.div
-            key={r.name}
-            initial={{ x: 60, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -60, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 320, damping: 32 }}
-            className="absolute inset-0 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-3"
-          >
-            <div className={`grid h-14 w-14 shrink-0 place-items-center rounded-xl ${r.tint}`}>
-              <div className="text-center leading-none">
-                <p className="headline text-2xl">{r.day}</p>
-                <p className="text-[8px] font-bold">{r.month}</p>
-              </div>
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-bold">{r.name}</p>
-              <p className="text-[11px] text-white/45">
-                {r.city}, {r.country}
-              </p>
-              <p className="mt-1.5 flex gap-1.5 text-[9px] font-bold text-white/70">
-                {r.dist.map((d) => (
-                  <span key={d} className="rounded-full bg-white/10 px-1.5 py-0.5">
-                    {d}
-                  </span>
-                ))}
-              </p>
-            </div>
-            <button
-              onClick={() => togglePin(r.name)}
-              aria-label={pinned.has(r.name) ? "Unpin race" : "Pin race"}
-              className={`text-lg ${pinned.has(r.name) ? "text-mint-bright" : "text-white/30"}`}
-            >
-              {pinned.has(r.name) ? "◉" : "⊕"}
-            </button>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-      <div className="mt-2 flex justify-center gap-1.5">
-        {races.map((race, i) => (
-          <button
-            key={race.name}
-            aria-label={`Show ${race.name}`}
-            onClick={() => setIndex(i)}
-            className={`h-1.5 rounded-full transition-all ${i === index % races.length ? "w-5 bg-mint-bright" : "w-1.5 bg-white/20"}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export function RaceCalendar() {
   const { t } = useI18n();
@@ -222,7 +139,37 @@ export function RaceCalendar() {
                 Also show races abroad
               </label>
 
-              <RaceSlideStack races={visible} pinned={pinned} togglePin={togglePin} />
+              <ul className="mt-3 space-y-2">
+                {visible.map((r) => (
+                  <li key={r.name} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-2.5">
+                    <div className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl ${r.tint}`}>
+                      <div className="text-center leading-none">
+                        <p className="headline text-xl">{r.day}</p>
+                        <p className="text-[8px] font-bold">{r.month}</p>
+                      </div>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-xs font-bold">{r.name}</p>
+                      <p className="text-[10px] text-white/45">
+                        {r.city}, {r.country}
+                      </p>
+                      <p className="mt-1 flex gap-1.5 text-[8px] font-bold text-white/70">
+                        {r.dist.map((d) => (
+                          <span key={d}>{d}</span>
+                        ))}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => togglePin(r.name)}
+                      aria-label={pinned.has(r.name) ? "Unpin race" : "Pin race"}
+                      className={`text-lg ${pinned.has(r.name) ? "text-mint-bright" : "text-white/30"}`}
+                    >
+                      {pinned.has(r.name) ? "◉" : "⊕"}
+                    </button>
+                  </li>
+                ))}
+                {visible.length === 0 && <li className="py-4 text-center text-xs text-white/40">No races match.</li>}
+              </ul>
 
               <div className="mt-3 flex items-center justify-between rounded-2xl border border-mint-bright/20 bg-mint/25 p-3 text-xs font-bold">
                 <span>+ Add your race</span>
