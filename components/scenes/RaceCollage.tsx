@@ -11,10 +11,12 @@ import { IpadFrame } from "../ui/ipad";
 
 export type CollageRace = { id: string; name: string; date: string; country: string; image: string | null };
 
-// [x vw, y vh] — where each card starts (off past either edge of the screen) and where it lands,
-// arranged as a tidy 3x2 grid lined up inside the iPad's screen instead of a scattered pile.
-const START: [number, number][] = [[-62, -10], [62, -10], [-66, 4], [66, 4], [-60, 18], [60, 18]];
-const END: [number, number][] = [[-12, -13], [0, -13], [12, -13], [-12, 13], [0, 13], [12, 13]];
+// [x%, y%] offsets from the iPad frame's own center — percent of the frame itself, not the
+// viewport, so cards stay aligned with the screen no matter how big the frame renders.
+// START keeps cards well past the frame's edges (frame width is capped, viewport isn't, so this
+// has generous margin); END lines them up in a 3x2 grid inside the screen cutout.
+const START: [number, number][] = [[-220, -40], [220, -40], [-230, 10], [230, 10], [-215, 60], [215, 60]];
+const END: [number, number][] = [[-29.31, -18.88], [0, -18.88], [29.31, -18.88], [-29.31, 18.88], [0, 18.88], [29.31, 18.88]];
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 function RaceThumb({ race, lang }: { race: CollageRace; lang: keyof typeof MONTHS_SHORT }) {
@@ -83,9 +85,9 @@ export function RaceCollage({ races, total }: { races: CollageRace[]; total: num
       {!pin && <RaceCollageStatic races={races} total={total} />}
       {pin && (
         <div className="sticky top-0 h-screen overflow-hidden">
-          <motion.div style={{ opacity: label, y: labelY }} className="absolute inset-x-0 top-[9%] z-30 px-5 text-center">
+          <motion.div style={{ opacity: label, y: labelY }} className="absolute inset-x-0 top-[5%] z-30 px-5 text-center">
             <p className="eyebrow mb-3">{t("collage.eyebrow")}</p>
-            <h2 className="headline text-[clamp(2.2rem,5vw,4.6rem)]">
+            <h2 className="headline text-[clamp(1.8rem,min(4vw,6vh),4.2rem)]">
               {t("collage.headline", { n: total.toLocaleString(lang === "tr" ? "tr-TR" : lang === "es" ? "es-ES" : "en-US") })}
               <br />
               <span className="grad-text">{t("collage.headlineGrad")}</span>
@@ -93,15 +95,19 @@ export function RaceCollage({ races, total }: { races: CollageRace[]; total: num
           </motion.div>
 
           <motion.div style={{ scale: zoom }} className="absolute inset-0 grid place-items-center">
-            <IpadFrame className="w-[78vw] max-w-[760px]" />
-            <div className="pointer-events-none absolute inset-0">
-              {races.slice(0, 6).map((r, i) => (
-                <PileCard key={r.id} i={i} race={r} e={e} lang={lang} />
-              ))}
+            {/* Capped by width (vw/px) AND height (vh) together — a short browser window must shrink the
+                iPad instead of letting it grow tall enough to crash into the headline/CTA above and below. */}
+            <div className="relative mx-auto" style={{ width: "min(78vw, 760px, 70vh)" }}>
+              <IpadFrame className="w-full" />
+              <div className="pointer-events-none absolute inset-0">
+                {races.slice(0, 6).map((r, i) => (
+                  <PileCard key={r.id} i={i} race={r} e={e} lang={lang} />
+                ))}
+              </div>
             </div>
           </motion.div>
 
-          <motion.div style={{ opacity: label, y: labelY }} className="absolute inset-x-0 bottom-[9%] z-30 text-center">
+          <motion.div style={{ opacity: label, y: labelY }} className="absolute inset-x-0 bottom-[5%] z-30 text-center">
             <Link href="/races" className="btn-mint">
               {t("collage.cta")}
             </Link>
@@ -115,14 +121,16 @@ export function RaceCollage({ races, total }: { races: CollageRace[]; total: num
 function PileCard({ i, race, e, lang }: { i: number; race: CollageRace; e: MotionValue<number>; lang: keyof typeof MONTHS_SHORT }) {
   const [sx, sy] = START[i % START.length];
   const [ex, ey] = END[i % END.length];
-  const x = useTransform(e, (v) => `${lerp(sx, ex, v)}vw`);
-  const y = useTransform(e, (v) => `${lerp(sy, ey, v)}vh`);
+  // left/top (not transform) so the percentages resolve against the iPad frame — its containing
+  // block — instead of the card's own box; x/y below is just the constant self-centering offset.
+  const left = useTransform(e, (v) => `${lerp(sx, ex, v) + 50}%`);
+  const top = useTransform(e, (v) => `${lerp(sy, ey, v) + 50}%`);
   const rotate = useTransform(e, (v) => lerp(i % 2 ? 10 : -10, 0, v));
   const [, m, d] = race.date.split("-").map(Number);
   return (
     <motion.figure
-      style={{ x, y, rotate, zIndex: 10 + i, width: "var(--cw, clamp(68px, 6vw, 96px))", aspectRatio: "4 / 5" }}
-      className="absolute left-1/2 top-1/2 -ml-[calc(var(--cw,clamp(68px,6vw,96px))/2)] -mt-[calc(var(--cw,clamp(68px,6vw,96px))*0.625)] overflow-hidden rounded-lg border border-white/15 bg-gradient-to-br from-mint via-[#0d3a26] to-ink shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)]"
+      style={{ left, top, x: "-50%", y: "-50%", rotate, zIndex: 10 + i, width: "clamp(56px, 24%, 108px)", aspectRatio: "4 / 5" }}
+      className="absolute overflow-hidden rounded-lg border border-white/15 bg-gradient-to-br from-mint via-[#0d3a26] to-ink shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)]"
     >
       {race.image && (
         // eslint-disable-next-line @next/next/no-img-element
