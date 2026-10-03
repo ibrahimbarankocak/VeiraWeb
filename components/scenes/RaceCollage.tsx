@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRef } from "react";
-import { motion, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { range, smooth, useMap, useMinWidth, usePointerFine } from "./hooks";
 import { Reveal } from "../ui/Reveal";
 import { useI18n } from "../../lib/i18n/context";
@@ -39,75 +39,75 @@ function RaceThumb({ race, lang }: { race: CollageRace; lang: keyof typeof MONTH
 function RaceCollageStatic({ races, total }: { races: CollageRace[]; total: number }) {
   const { t, lang } = useI18n();
   return (
-    <section className="relative px-5 py-24 md:px-8">
-      <Reveal>
-        <div className="text-center">
-          <p className="eyebrow mb-3">{t("collage.eyebrow")}</p>
-          <h2 className="headline text-[clamp(2.2rem,8vw,4.6rem)]">
-            {t("collage.headline", { n: total.toLocaleString(lang === "tr" ? "tr-TR" : lang === "es" ? "es-ES" : "en-US") })}
-            <br />
-            <span className="grad-text">{t("collage.headlineGrad")}</span>
-          </h2>
-        </div>
-        <div className="mx-auto mt-10 grid max-w-md grid-cols-3 gap-3">
-          {races.slice(0, 6).map((r) => (
-            <RaceThumb key={r.id} race={r} lang={lang} />
-          ))}
-        </div>
-        <div className="mt-10 text-center">
-          <Link href="/races" className="btn-mint">
-            {t("collage.cta")}
-          </Link>
-        </div>
-      </Reveal>
-    </section>
+    <Reveal>
+      <div className="text-center">
+        <p className="eyebrow mb-3">{t("collage.eyebrow")}</p>
+        <h2 className="headline text-[clamp(2.2rem,8vw,4.6rem)]">
+          {t("collage.headline", { n: total.toLocaleString(lang === "tr" ? "tr-TR" : lang === "es" ? "es-ES" : "en-US") })}
+          <br />
+          <span className="grad-text">{t("collage.headlineGrad")}</span>
+        </h2>
+      </div>
+      <div className="mx-auto mt-10 grid max-w-md grid-cols-3 gap-3">
+        {races.slice(0, 6).map((r) => (
+          <RaceThumb key={r.id} race={r} lang={lang} />
+        ))}
+      </div>
+      <div className="mt-10 text-center">
+        <Link href="/races" className="btn-mint">
+          {t("collage.cta")}
+        </Link>
+      </div>
+    </Reveal>
   );
 }
 
 export function RaceCollage({ races, total }: { races: CollageRace[]; total: number }) {
   const { t, lang } = useI18n();
+  // Always mounted (even while pin is still false on first paint) so useScroll binds to a real node
+  // from the start — conditionally swapping this element out for a different tree left the scroll
+  // listener permanently attached to a null target and froze the card animation forever.
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const desktop = useMinWidth(1024);
   const finePointer = usePointerFine();
   const pin = desktop && finePointer && !reduce;
   const { scrollYProgress: p } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const real = useTransform(p, (v) => smooth(range(v, 0.05, 0.55)));
-  const fixed = useMotionValue(1);
-  const e = pin ? real : fixed;
+  const e = useTransform(p, (v) => smooth(range(v, 0.05, 0.55)));
   const zoom = useMap(p, 0.6, 1, 1, 1.06);
   const label = useMap(p, 0.5, 0.68, 0, 1);
   const labelY = useMap(p, 0.5, 0.68, 30, 0);
 
-  if (!pin) return <RaceCollageStatic races={races} total={total} />;
-
   return (
-    <section ref={ref} className="relative h-[260vh]">
-      <div className="sticky top-0 h-screen overflow-hidden">
-        <motion.div style={{ opacity: label, y: labelY }} className="absolute inset-x-0 top-[9%] z-30 px-5 text-center">
-          <p className="eyebrow mb-3">{t("collage.eyebrow")}</p>
-          <h2 className="headline text-[clamp(2.2rem,5vw,4.6rem)]">
-            {t("collage.headline", { n: total.toLocaleString(lang === "tr" ? "tr-TR" : lang === "es" ? "es-ES" : "en-US") })}
-            <br />
-            <span className="grad-text">{t("collage.headlineGrad")}</span>
-          </h2>
-        </motion.div>
+    <section ref={ref} className={pin ? "relative h-[260vh]" : "relative px-5 py-24 md:px-8"}>
+      {!pin && <RaceCollageStatic races={races} total={total} />}
+      {pin && (
+        <div className="sticky top-0 h-screen overflow-hidden">
+          <motion.div style={{ opacity: label, y: labelY }} className="absolute inset-x-0 top-[9%] z-30 px-5 text-center">
+            <p className="eyebrow mb-3">{t("collage.eyebrow")}</p>
+            <h2 className="headline text-[clamp(2.2rem,5vw,4.6rem)]">
+              {t("collage.headline", { n: total.toLocaleString(lang === "tr" ? "tr-TR" : lang === "es" ? "es-ES" : "en-US") })}
+              <br />
+              <span className="grad-text">{t("collage.headlineGrad")}</span>
+            </h2>
+          </motion.div>
 
-        <motion.div style={{ scale: zoom }} className="absolute inset-0 grid place-items-center">
-          <IpadFrame className="w-[78vw] max-w-[760px]" />
-          <div className="pointer-events-none absolute inset-0">
-            {races.slice(0, 6).map((r, i) => (
-              <PileCard key={r.id} i={i} race={r} e={e} lang={lang} />
-            ))}
-          </div>
-        </motion.div>
+          <motion.div style={{ scale: zoom }} className="absolute inset-0 grid place-items-center">
+            <IpadFrame className="w-[78vw] max-w-[760px]" />
+            <div className="pointer-events-none absolute inset-0">
+              {races.slice(0, 6).map((r, i) => (
+                <PileCard key={r.id} i={i} race={r} e={e} lang={lang} />
+              ))}
+            </div>
+          </motion.div>
 
-        <motion.div style={{ opacity: label, y: labelY }} className="absolute inset-x-0 bottom-[9%] z-30 text-center">
-          <Link href="/races" className="btn-mint">
-            {t("collage.cta")}
-          </Link>
-        </motion.div>
-      </div>
+          <motion.div style={{ opacity: label, y: labelY }} className="absolute inset-x-0 bottom-[9%] z-30 text-center">
+            <Link href="/races" className="btn-mint">
+              {t("collage.cta")}
+            </Link>
+          </motion.div>
+        </div>
+      )}
     </section>
   );
 }
