@@ -16,6 +16,23 @@ export function useMinWidth(px: number) {
   return ok;
 }
 
+/**
+ * True on devices with a real mouse/trackpad. False for touch devices — including landscape
+ * tablets/iPads, which are often as wide as a small laptop and would otherwise pass a width-only
+ * check. Pinned scroll-jacking effects should key off this, not just viewport width.
+ */
+export function usePointerFine() {
+  const [ok, setOk] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(pointer: fine)");
+    const on = () => setOk(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return ok;
+}
+
 export const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 export const smooth = (t: number) => t * t * (3 - 2 * t);
 /** Map v from [a,b] to 0..1, clamped. */

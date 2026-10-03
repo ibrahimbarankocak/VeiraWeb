@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
-import { range, smooth, useMap, useMinWidth } from "./hooks";
+import { range, smooth, useMap, useMinWidth, usePointerFine } from "./hooks";
 import { Reveal } from "../ui/Reveal";
 import { useI18n } from "../../lib/i18n/context";
 import { MONTHS_SHORT } from "../../lib/i18n/translations";
@@ -69,7 +69,8 @@ export function RaceCollage({ races, total }: { races: CollageRace[]; total: num
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const desktop = useMinWidth(1024);
-  const pin = desktop && !reduce;
+  const finePointer = usePointerFine();
+  const pin = desktop && finePointer && !reduce;
   const { scrollYProgress: p } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const real = useTransform(p, (v) => smooth(range(v, 0.05, 0.55)));
   const fixed = useMotionValue(1);
