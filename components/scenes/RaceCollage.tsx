@@ -14,7 +14,7 @@ export type CollageRace = { id: string; name: string; date: string; country: str
 // [x vw, y vh] — where each card starts (off past either edge of the screen) and where it lands,
 // arranged as a tidy 3x2 grid lined up inside the iPad's screen instead of a scattered pile.
 const START: [number, number][] = [[-62, -10], [62, -10], [-66, 4], [66, 4], [-60, 18], [60, 18]];
-const END: [number, number][] = [[-12, -7], [0, -7], [12, -7], [-12, 7], [0, 7], [12, 7]];
+const END: [number, number][] = [[-12, -13], [0, -13], [12, -13], [-12, 13], [0, 13], [12, 13]];
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 function RaceThumb({ race, lang }: { race: CollageRace; lang: keyof typeof MONTHS_SHORT }) {
@@ -121,8 +121,8 @@ function PileCard({ i, race, e, lang }: { i: number; race: CollageRace; e: Motio
   const [, m, d] = race.date.split("-").map(Number);
   return (
     <motion.figure
-      style={{ x, y, rotate, zIndex: 10 + i, width: "var(--cw, clamp(74px, 7.2vw, 112px))", aspectRatio: "4 / 5" }}
-      className="absolute left-1/2 top-1/2 -ml-[calc(var(--cw,clamp(74px,7.2vw,112px))/2)] -mt-[calc(var(--cw,clamp(74px,7.2vw,112px))*0.625)] overflow-hidden rounded-lg border border-white/15 bg-gradient-to-br from-mint via-[#0d3a26] to-ink shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)]"
+      style={{ x, y, rotate, zIndex: 10 + i, width: "var(--cw, clamp(68px, 6vw, 96px))", aspectRatio: "4 / 5" }}
+      className="absolute left-1/2 top-1/2 -ml-[calc(var(--cw,clamp(68px,6vw,96px))/2)] -mt-[calc(var(--cw,clamp(68px,6vw,96px))*0.625)] overflow-hidden rounded-lg border border-white/15 bg-gradient-to-br from-mint via-[#0d3a26] to-ink shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)]"
     >
       {race.image && (
         // eslint-disable-next-line @next/next/no-img-element
