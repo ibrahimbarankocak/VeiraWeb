@@ -156,7 +156,7 @@ const en: Dict = {
   faq: {
     heading: "FAQ's",
     q1: "Where does the race data come from?",
-    a1: "We pull race listings from official federations and race platforms — the Turkish athletics federation, RunPo, PassTiming and PlusTimer at home, plus Finishers, World Athletics and the ITRA trail calendar abroad. Duplicates get merged and expired races drop off automatically.",
+    a1: "We pull race listings from official federations and race platforms, both at home and abroad. Duplicates get merged and expired races drop off automatically.",
     q2: "Is Veira only for Turkey?",
     a2: "No — race data is tagged by country, so yours shows first, with a switch to include races abroad too.",
     q3: "How does the weekly league work?",
@@ -481,7 +481,7 @@ const tr: Dict = {
   faq: {
     heading: "Sıkça Sorulanlar",
     q1: "Yarış verileri nereden geliyor?",
-    a1: "Yarış listelerini resmi federasyonlardan ve yarış platformlarından topluyoruz — Türkiye'de Türkiye Atletizm Federasyonu, RunPo, PassTiming ve PlusTimer; yurt dışında Finishers, World Athletics ve ITRA trail takvimi. Tekrar eden kayıtlar birleştirilir, süresi geçen yarışlar otomatik olarak kaldırılır.",
+    a1: "Yarış listelerini resmi federasyonlardan ve yarış platformlarından topluyoruz — Türkiye'de ve yurt dışında. Tekrar eden kayıtlar birleştirilir, süresi geçen yarışlar otomatik olarak kaldırılır.",
     q2: "Veira sadece Türkiye için mi?",
     a2: "Hayır — yarış verileri ülkeye göre etiketli, önce kendi ülken gösterilir; istersen yurt dışı yarışları da açabilirsin.",
     q3: "Haftalık lig nasıl işliyor?",
@@ -806,7 +806,7 @@ const es: Dict = {
   faq: {
     heading: "Preguntas frecuentes",
     q1: "¿De dónde vienen los datos de las carreras?",
-    a1: "Recogemos carreras de federaciones y plataformas oficiales — en Turquía la federación de atletismo turca, RunPo, PassTiming y PlusTimer; en el extranjero, Finishers, World Athletics y el calendario de trail de ITRA. Los duplicados se combinan y las carreras vencidas se eliminan automáticamente.",
+    a1: "Recogemos carreras de federaciones y plataformas oficiales, tanto locales como internacionales. Los duplicados se combinan y las carreras vencidas se eliminan automáticamente.",
     q2: "¿Veira es solo para Turquía?",
     a2: "No — los datos están etiquetados por país, así que el tuyo aparece primero, con la opción de incluir también carreras en el extranjero.",
     q3: "¿Cómo funciona la liga semanal?",

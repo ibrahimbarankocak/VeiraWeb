@@ -96,7 +96,7 @@ export function AuroraBars({
 
       <div
         className="pointer-events-none absolute inset-0"
-        style={{ background: "radial-gradient(ellipse 90% 80% at 50% 100%, transparent 40%, #000000cc 100%)" }}
+        style={{ background: "radial-gradient(ellipse 90% 80% at 50% 100%, transparent 40%, rgb(var(--c-ink) / 0.8) 100%)" }}
       />
     </div>
   );
