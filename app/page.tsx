@@ -1,6 +1,5 @@
 import { Navbar } from "../components/sections/Navbar";
 import { Problem } from "../components/sections/Problem";
-import { Marquee } from "../components/sections/Marquee";
 import { RaceCalendar } from "../components/sections/RaceCalendar";
 import { PlanTeaser } from "../components/sections/PlanTeaser";
 import { ClubsTeaser } from "../components/sections/ClubsTeaser";
@@ -69,10 +68,8 @@ export default async function HomePage() {
         <div className="px-5 pb-16 md:px-8">
           <HeroStats />
         </div>
-        <Marquee />
         <Problem />
         <PhoneRise />
-        <Marquee reverse />
         <RaceCalendar />
         {races.length > 0 && <RaceCollage races={pickCollage(races)} total={races.length} />}
         <PlanTeaser />
