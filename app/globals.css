@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ---- Theme tokens. Dark is the default; light applies via data-theme="light" or the OS setting. ---- */
+/* ---- Theme tokens. Dark is the default; light applies via data-theme="light" only. ---- */
 :root {
-  color-scheme: dark;
   --c-ink: 5 9 7;
   --c-panel: 12 21 18;
   --c-fg: 255 255 255;
@@ -30,7 +29,6 @@
   --blob-op: 1;
 }
 :root[data-theme="light"] {
-  color-scheme: light;
   --c-ink: 243 248 244;
   --c-panel: 255 255 255;
   --c-fg: 9 34 24;
@@ -52,33 +50,7 @@
   --sk-lamp-op: 0;
   --sk-road-a: #56645f; --sk-road-b: #3a4642; --sk-road-edge: rgba(255, 255, 255, 0.5); --sk-lane: #ffffff;
   --sk-shadow: 0.28;
-  --blob-op: 0.4;
-}
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    color-scheme: light;
-    --c-ink: 243 248 244;
-    --c-panel: 255 255 255;
-    --c-fg: 9 34 24;
-    --c-mint-bright: 16 128 86;
-    --c-onbright: 255 255 255;
-    --g1: #0b6b46;
-    --g2: #17a06a;
-    --g3: #7aa60f;
-    --glow: none;
-    --ring-0: #9be8c1; --ring-1: #6fdaa5; --ring-2: #43c78c; --ring-3: #2aa673;
-    --ring-4: #1f8560; --ring-5: #17664a; --ring-6: #104a37; --ring-7: #0a3025;
-    --sk-sky: linear-gradient(to bottom, #6ec3ee 0%, #b5e3f6 46%, #ffeac4 78%, #ffd08a 100%);
-    --sk-far: #b3d3cb; --sk-mid: #86b3a5; --sk-near: #4c7a6b;
-    --sk-win0: #fff2b8; --sk-win1: #e7f5ff; --sk-win2: #ffe0a0;
-    --sk-night: 0; --sk-day: 1;
-    --sk-beam: rgba(255, 236, 160, 0.6);
-    --sk-cloud: #ffffff; --sk-cloud-op: 0.8;
-    --sk-lamp-op: 0;
-    --sk-road-a: #56645f; --sk-road-b: #3a4642; --sk-road-edge: rgba(255, 255, 255, 0.5); --sk-lane: #ffffff;
-    --sk-shadow: 0.28;
-    --blob-op: 0.4;
-  }
+--blob-op: 0.4;
 }
 
 html {
