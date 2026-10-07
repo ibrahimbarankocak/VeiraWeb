@@ -8,6 +8,7 @@ import { getSupabase } from "../../lib/supabase";
 import { useUser } from "../../lib/useUser";
 import { useI18n } from "../../lib/i18n/context";
 import { trackSignupClick } from "../../lib/gtag";
+import { markSignupPending } from "../../lib/signupConversion";
 
 const input =
   "h-14 w-full rounded-md border border-mint/25 bg-white px-4 text-base text-onmint outline-none transition focus:border-mint focus:ring-2 focus:ring-mint/20";
@@ -57,6 +58,7 @@ function AuthForm() {
         if (error) throw error;
         // Supabase returns a user with no identities when the email is already registered.
         if (data.user && data.user.identities?.length === 0) throw new Error("already registered");
+        markSignupPending(email);
         trackSignupClick("signup_form_submitted");
         if (data.session) {
           router.replace("/");

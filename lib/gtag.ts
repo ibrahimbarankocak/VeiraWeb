@@ -13,3 +13,9 @@ export function trackSignupClick(label: string) {
     event_label: label,
   });
 }
+
+/** Fires the Google Ads signup conversion. Call only once a registration has actually completed. */
+export function trackSignupConversion() {
+  if (typeof window === "undefined" || typeof window.gtag !== "function") return;
+  window.gtag("event", "conversion", { send_to: "AW-18489992499/rwFFCNCEypQdELPK2_BE" });
+}

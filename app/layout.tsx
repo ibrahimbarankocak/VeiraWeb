@@ -3,6 +3,7 @@ import { Barlow_Condensed, Manrope } from "next/font/google";
 import Script from "next/script";
 import { type ReactNode } from "react";
 import { ScrollProgress } from "../components/ui/ScrollProgress";
+import { SignupConversionTracker } from "../components/ui/SignupConversionTracker";
 import { SmoothScroll } from "../components/scenes/SmoothScroll";
 import { LanguageProvider } from "../lib/i18n/context";
 import "./globals.css";
@@ -73,6 +74,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <LanguageProvider>
           <SmoothScroll />
           <ScrollProgress />
+          <SignupConversionTracker />
           {children}
         </LanguageProvider>
       </body>

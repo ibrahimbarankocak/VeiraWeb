@@ -51,8 +51,7 @@
   --sk-lamp-op: 0;
   --sk-road-a: #56645f; --sk-road-b: #3a4642; --sk-road-edge: rgba(255, 255, 255, 0.5); --sk-lane: #ffffff;
   --sk-shadow: 0.28;
---blob-op: 0.4;
-}
+  --blob-op: 0.4;
 }
 
 html {
