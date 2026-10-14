@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Bolt } from "./Brand";
+import { Mark } from "./Brand";
 
 export type Tab = "Home" | "Races" | "League" | "Inventory" | "Clubs";
 
@@ -42,7 +42,7 @@ export function PhoneFrame({
         <div className="flex items-center justify-between px-5 pb-2 pt-11">
           <div className="flex items-center gap-2">
             <span className="grid h-7 w-7 place-items-center rounded-lg bg-mint text-mint-light">
-              <Bolt className="h-3.5 w-3.5" />
+              <Mark className="h-4 w-4" />
             </span>
             <span className="font-display text-2xl font-bold lowercase leading-none">veira</span>
           </div>
