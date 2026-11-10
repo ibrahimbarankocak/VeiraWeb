@@ -3,6 +3,8 @@
 import { AnimatePresence, motion, useAnimationControls, useReducedMotion } from "framer-motion";
 import { useMemo, useState } from "react";
 
+const WHATSAPP_URL = `https://wa.me/905415631746?text=${encodeURIComponent("Barıştık \u2764\uFE0F Kahve ne zaman? \u2615")}`;
+
 const HEART =
   "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z";
 
@@ -15,7 +17,7 @@ const RIGHT_HALF =
 const RED = "#e11d48";
 const MILK = "#fbf7ef";
 
-type Stage = "barisma" | "kahve" | "bitti";
+type Stage = "barisma" | "kahve";
 
 // Seeded so the server and client render the same hearts.
 function seeded(seed: number) {
@@ -97,38 +99,6 @@ function BrokenHeart({
         <HeartHalf side="right" healed={healed} index={heart.id} />
       </motion.div>
     </motion.div>
-  );
-}
-
-function RisingHearts() {
-  const hearts = useMemo(() => {
-    const rand = seeded(2024);
-    return Array.from({ length: 26 }, (_, i) => ({
-      id: i,
-      left: rand() * 100,
-      size: 14 + rand() * 26,
-      duration: 4 + rand() * 3,
-      delay: rand() * 2.5,
-      drift: -40 + rand() * 80,
-    }));
-  }, []);
-
-  return (
-    <div className="pointer-events-none fixed inset-0 z-20 overflow-hidden">
-      {hearts.map((h) => (
-        <motion.svg
-          key={h.id}
-          viewBox="0 0 24 24"
-          className="absolute"
-          style={{ left: `${h.left}%`, bottom: -50, width: h.size, height: h.size }}
-          initial={{ y: 0, x: 0, opacity: 0 }}
-          animate={{ y: "-110vh", x: h.drift, opacity: [0, 1, 1, 0] }}
-          transition={{ duration: h.duration, delay: h.delay, repeat: Infinity, ease: "easeOut" }}
-        >
-          <path d={HEART} fill={RED} />
-        </motion.svg>
-      ))}
-    </div>
   );
 }
 
@@ -236,8 +206,6 @@ export function Apology() {
         ))}
       </div>
 
-      {stage === "bitti" && !still && <RisingHearts />}
-
       <div className="relative z-10 flex h-full items-center justify-center px-4">
         <div className="w-full max-w-xl rounded-[2rem] border border-rose-100 bg-white/75 px-6 py-12 shadow-[0_30px_80px_-30px_rgba(190,18,60,0.35)] backdrop-blur-md sm:px-10">
           <AnimatePresence mode="wait">
@@ -245,34 +213,11 @@ export function Apology() {
               <Question key="barisma" title="Barıştık mı Seda?" onYes={() => setStage("kahve")} />
             )}
             {stage === "kahve" && (
-              <Question key="kahve" title={"Beraber bir kahve? ☕"} onYes={() => setStage("bitti")} />
-            )}
-            {stage === "bitti" && (
-              <motion.div
-                key="bitti"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ type: "spring", stiffness: 160, damping: 14 }}
-                className="text-center"
-              >
-                <motion.svg
-                  viewBox="0 0 24 24"
-                  className="mx-auto h-20 w-20"
-                  animate={still ? undefined : { scale: [1, 1.15, 1, 1.15, 1] }}
-                  transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 0.4 }}
-                >
-                  <path d={HEART} fill={RED} />
-                </motion.svg>
-                <h1
-                  className="mt-4 text-[clamp(2.4rem,8vw,4rem)] font-bold leading-tight text-rose-700"
-                  style={{ fontFamily: "var(--font-script), cursive" }}
-                >
-                  Yaşasın!
-                </h1>
-                <p className="mt-3 text-lg text-rose-900/70">
-                  Kahveler benden. Seni çok seviyorum ❤️
-                </p>
-              </motion.div>
+              <Question
+                key="kahve"
+                title={"Beraber bir kahve? ☕"}
+                onYes={() => window.location.assign(WHATSAPP_URL)}
+              />
             )}
           </AnimatePresence>
         </div>
